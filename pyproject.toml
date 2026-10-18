@@ -3,7 +3,7 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "Telethon-TGSMM-Layer231"
+name = "Telethon"
 dynamic = ["version"]
 description = "Full-featured Telegram client library for Python 3"
 readme = "README.rst"
@@ -43,8 +43,8 @@ cryptg = [
 
 [project.urls]
 Homepage = "https://telethon.dev"
-Source = "https://codeberg.org/Lonami/Telethon"
-Download = "https://codeberg.org/Lonami/Telethon/tags"
+Source = "https://github.com/gavrilovskiszalamandra833-eng/telethon-tgsmm-layer231"
+Download = "https://github.com/gavrilovskiszalamandra833-eng/telethon-tgsmm-layer231/releases"
 Documentation = "https://docs.telethon.dev"
 Reference = "https://tl.telethon.dev"
 

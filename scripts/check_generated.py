@@ -11,6 +11,8 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 MANIFEST = ROOT / 'generated-layer231-manifest.json'
+RELEASE_DISTRIBUTION = 'Telethon'
+RELEASE_VERSION = '1.45.0+tgsmm.layer231.2'
 SOURCE_FILES = (
     'telethon_generator/data/api.tl',
     'telethon_generator/data/mtproto.tl',
@@ -67,8 +69,12 @@ def current_manifest():
     if missing:
         raise SystemExit('missing generated files: {}'.format(', '.join(missing)))
     return {
-        'format': 1,
+        'format': 2,
         'generator_command': 'python3 setup.py gen tl errors',
+        'release': {
+            'distribution': RELEASE_DISTRIBUTION,
+            'version': RELEASE_VERSION,
+        },
         'schema': schema_counts(),
         'sources': {
             name: sha256(ROOT / name) for name in SOURCE_FILES

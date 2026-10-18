@@ -4,11 +4,13 @@ Layer 231 fork release notes
 Identity
 --------
 
-This repository is an internal, Git-dependency fork of Telethon. It installs
-as the distinct distribution ``Telethon-TGSMM-Layer231`` while retaining the
-``telethon`` import package. Its PEP 440 version is
-``1.45.0+tgsmm.layer231.1``. Consumers should pin the release commit in their
-Git dependency rather than resolve it as upstream ``Telethon``.
+This repository is an audited Git-dependency fork of Telethon. It installs as
+the canonical ``Telethon`` distribution and retains the ``telethon`` import
+package. Its unique PEP 440 version is ``1.45.0+tgsmm.layer231.2``. Using the
+canonical distribution name lets requirements such as
+``opentele-ng``'s ``telethon>=1.36,<2`` resolve to this fork without installing
+a second distribution that also owns the ``telethon`` namespace. Consumers
+should pin the release tag or commit.
 
 Provenance
 ----------
@@ -59,6 +61,11 @@ fixtures and the complete upstream suite with::
     python3 -m pytest -q tests/telethon/test_layer231_release.py
     python3 -m pytest -q
     uv build
+
+In a clean environment, install ``opentele-ng`` and the fork wheel, then run
+``python -m pip check``. ``importlib.metadata`` must report exactly one
+distribution providing the ``telethon`` package, named ``Telethon`` at version
+``1.45.0+tgsmm.layer231.2``.
 
 The release fixtures cover the patched ``MessageService`` class carrying
 ``MessageActionGramTransfer``, ``UpdateWalletState``, ``UserFull.gram_address``,

@@ -212,13 +212,13 @@ def main(argv):
             version = re.search(r"^__version__\s*=\s*'(.*)'.*$",
                                 f.read(), flags=re.MULTILINE).group(1)
         setup(
-            name='Telethon-TGSMM-Layer231',
+            name='Telethon',
             version=version,
             description="Full-featured Telegram client library for Python 3",
             long_description=long_description,
 
-            url='https://codeberg.org/Lonami/Telethon',
-            download_url='https://codeberg.org/Lonami/Telethon/tags',
+            url='https://github.com/gavrilovskiszalamandra833-eng/telethon-tgsmm-layer231',
+            download_url='https://github.com/gavrilovskiszalamandra833-eng/telethon-tgsmm-layer231/releases',
 
             author='Lonami Exo',
             author_email='totufals@hotmail.com',

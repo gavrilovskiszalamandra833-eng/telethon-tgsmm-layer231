@@ -1,8 +1,10 @@
 import asyncio
+import json
 import logging
 import struct
 import traceback
 from datetime import datetime, timezone
+from pathlib import Path
 from types import SimpleNamespace
 
 import pytest
@@ -14,6 +16,27 @@ from telethon.network.mtprotosender import MTProtoSender, _log_type_not_found
 from telethon.tl import TLObject, types
 from telethon.tl.core import GzipPacked, RpcResult
 from telethon.tl.core.gzippacked import GzipPackedError
+from telethon.version import __version__
+
+
+ROOT = Path(__file__).resolve().parents[2]
+
+
+def test_release_uses_canonical_distribution_identity():
+    pyproject = (ROOT / 'pyproject.toml').read_text(encoding='utf-8')
+    setup_py = (ROOT / 'setup.py').read_text(encoding='utf-8')
+    manifest = json.loads(
+        (ROOT / 'generated-layer231-manifest.json').read_text(encoding='utf-8'))
+
+    assert 'name = "Telethon"' in pyproject
+    assert "name='Telethon'" in setup_py
+    assert 'Telethon-TGSMM-Layer231' not in pyproject
+    assert 'Telethon-TGSMM-Layer231' not in setup_py
+    assert __version__ == '1.45.0+tgsmm.layer231.2'
+    assert manifest['release'] == {
+        'distribution': 'Telethon',
+        'version': __version__,
+    }
 
 
 def _roundtrip(value):

@@ -1,5 +1,5 @@
 {
-  "format": 1,
+  "format": 2,
   "generated": {
     "telethon/errors/rpcerrorlist.py": "613da4a71a4b3c53e3ee081437b3f1df2a8209909f98bb4e77a3da8d01b5c1c6",
     "telethon/tl/alltlobjects.py": "1678f493905b86ffdb85937c816bd64c9ff489d8b91cf532aef769acf49bc3a5",
@@ -60,6 +60,10 @@
     "telethon/tl/types/wallet.py": "7be8180232cb5eaca6a5fd86703ee41b24cab2788abfd39fa9acf24853da894f"
   },
   "generator_command": "python3 setup.py gen tl errors",
+  "release": {
+    "distribution": "Telethon",
+    "version": "1.45.0+tgsmm.layer231.2"
+  },
   "schema": {
     "constructors": 1725,
     "functions": 841,
