@@ -3,7 +3,7 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "Telethon"
+name = "Telethon-TGSMM-Layer231"
 dynamic = ["version"]
 description = "Full-featured Telegram client library for Python 3"
 readme = "README.rst"
@@ -54,5 +54,12 @@ path = "telethon/version.py"
 [tool.hatch.build.targets.sdist]
 include = [
     "/telethon",
+    "/telethon_generator",
+    "/tests",
+    "/scripts",
+    "/LAYER231_RELEASE.rst",
+    "/generated-layer231-manifest.json",
+    "/hatch_build.py",
+    "/setup.py",
 ]
 [tool.hatch.build.hooks.custom]

@@ -33,6 +33,13 @@ from ..crypto import AuthKey
 from ..helpers import retry_range
 
 
+def _log_type_not_found(log, error):
+    """Log wire metadata without retaining or rendering the wire payload."""
+    log.info(
+        'Type %08x not found, remaining data length %d',
+        error.invalid_constructor_id, error.remaining_length)
+
+
 class MTProtoSender:
     """
     MTProto Mobile Protocol sender
@@ -551,8 +558,7 @@ class MTProtoSender:
                     continue  # this message is to be ignored
             except TypeNotFoundError as e:
                 # Received object which we don't know how to deserialize
-                self._log.info('Type %08x not found, remaining data %r',
-                               e.invalid_constructor_id, e.remaining)
+                _log_type_not_found(self._log, e)
                 continue
             except SecurityError as e:
                 # A step while decoding had the incorrect data. This message
@@ -639,14 +645,22 @@ class MTProtoSender:
             # "BufferError: No more data left to read (need 4, got 0: b''); last read None".
             # This seems to be particularly common for "RpcError(error_code=-500, error_message='No workers running')".
             if rpc_result.error:
-                self._log.info('Received error without parent request: %s', rpc_result.error)
+                self._log.info(
+                    'Received error without parent request: constructor %08x, length %d',
+                    rpc_result.error.CONSTRUCTOR_ID, len(bytes(rpc_result.error)))
             else:
                 try:
                     with BinaryReader(rpc_result.body) as reader:
                         if not isinstance(reader.tgread_object(), upload.File):
                             raise ValueError('Not an upload.File')
                 except (TypeNotFoundError, ValueError):
-                    self._log.info('Received response without parent request: %s', rpc_result.body)
+                    constructor_id = (
+                        struct.unpack_from('<I', rpc_result.body)[0]
+                        if len(rpc_result.body) >= 4 else 0)
+                    self._log.info(
+                        'Received response without parent request: '
+                        'constructor %08x, length %d',
+                        constructor_id, len(rpc_result.body))
             return
 
         if rpc_result.error:

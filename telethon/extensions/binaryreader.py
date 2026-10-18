@@ -151,9 +151,8 @@ class BinaryReader:
                 # If there was still no luck, give up
                 self.seek(-4)  # Go back
                 pos = self.tell_position()
-                error = TypeNotFoundError(constructor_id, self.read())
-                self.set_position(pos)
-                raise error
+                raise TypeNotFoundError(
+                    constructor_id, len(self.stream) - pos)
 
         return clazz.from_reader(self)
 

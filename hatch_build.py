@@ -64,4 +64,6 @@ class CustomBuildHook(BuildHookInterface):
         build_data['force_include'][str(self.directory / LIBRARY_DIR)] = str(LIBRARY_DIR)
 
     def finalize(self, version: str, build_data: dict[str, Any], artifact_path: str) -> None:
-        self.clean([])
+        # Generated runtime files are committed in this fork. Removing them
+        # after a local build would leave the checkout unusable and dirty.
+        pass
