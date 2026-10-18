@@ -13,7 +13,9 @@ from telethon.errors import InvalidBufferError, TypeNotFoundError
 from telethon.extensions import BinaryReader
 from telethon.extensions.binaryreader import BinaryReaderBufferError
 from telethon.network.mtprotosender import MTProtoSender, _log_type_not_found
-from telethon.tl import TLObject, types
+from telethon.client import telegrambaseclient
+from telethon.client.telegrambaseclient import TelegramBaseClient
+from telethon.tl import TLObject, functions, types
 from telethon.tl.core import GzipPacked, RpcResult
 from telethon.tl.core.gzippacked import GzipPackedError
 from telethon.version import __version__
@@ -32,11 +34,130 @@ def test_release_uses_canonical_distribution_identity():
     assert "name='Telethon'" in setup_py
     assert 'Telethon-TGSMM-Layer231' not in pyproject
     assert 'Telethon-TGSMM-Layer231' not in setup_py
-    assert __version__ == '1.45.0+tgsmm.layer231.2'
+    assert __version__ == '1.45.0+tgsmm.layer231.3'
     assert manifest['release'] == {
         'distribution': 'Telethon',
         'version': __version__,
     }
+
+
+def _exported_sender_fixture(monkeypatch, *, send_error=None):
+    sent = []
+    connections = []
+
+    class Sender:
+        def __init__(self, auth_key, *, loggers):
+            assert auth_key is None
+
+        async def connect(self, connection):
+            connections.append(connection)
+
+        async def send(self, request):
+            sent.append(request)
+            if send_error is not None:
+                raise send_error
+
+    class Client:
+        def __init__(self):
+            self._proxy = ('proxy-host', 443)
+            self._local_addr = ('127.0.0.1', 0)
+            self._log = {telegrambaseclient.__name__: logging.getLogger(
+                'telethon.layer231.exported-sender')}
+            self._init_request = functions.InitConnectionRequest(
+                api_id=12345,
+                device_model='immutable-device',
+                system_version='immutable-system',
+                app_version='immutable-app',
+                system_lang_code='immutable-system-lang',
+                lang_pack='immutable-lang-pack',
+                lang_code='immutable-lang',
+                query=functions.help.GetConfigRequest(),
+                proxy=object(),
+                params=object(),
+            )
+            # Ensure cloning keeps the entire template, including attributes a
+            # newer layer may add before this release helper is updated.
+            self._init_request.release_marker = object()
+
+        async def _get_dc(self, dc_id):
+            return SimpleNamespace(
+                id=dc_id, ip_address='149.154.167.{}'.format(dc_id), port=443)
+
+        def _connection(self, *args, **kwargs):
+            return args, kwargs
+
+        async def __call__(self, request):
+            await asyncio.sleep(0)
+            return SimpleNamespace(
+                id=request.dc_id,
+                bytes='auth-{}'.format(request.dc_id).encode(),
+            )
+
+    monkeypatch.setattr(telegrambaseclient, 'MTProtoSender', Sender)
+    return Client(), sent, connections
+
+
+def _assert_export_uses_full_cloned_template(client, request, dc_id):
+    assert isinstance(request, functions.InvokeWithLayerRequest)
+    clone = request.query
+    assert clone is not client._init_request
+    assert clone.release_marker is client._init_request.release_marker
+    for name, value in vars(client._init_request).items():
+        if name != 'query':
+            assert getattr(clone, name) is value or getattr(clone, name) == value
+    assert isinstance(clone.query, functions.auth.ImportAuthorizationRequest)
+    assert clone.query.id == dc_id
+    assert clone.query.bytes == 'auth-{}'.format(dc_id).encode()
+
+
+def test_exported_sender_clones_complete_init_connection_template(monkeypatch):
+    client, sent, connections = _exported_sender_fixture(monkeypatch)
+    original_query = client._init_request.query
+
+    sender = asyncio.run(
+        TelegramBaseClient._create_exported_sender(client, 2))
+
+    assert sender is not None
+    assert client._init_request.query is original_query
+    assert len(sent) == len(connections) == 1
+    _assert_export_uses_full_cloned_template(client, sent[0], 2)
+    assert connections[0][1]['proxy'] is client._proxy
+    assert connections[0][1]['local_addr'] is client._local_addr
+
+
+@pytest.mark.parametrize('send_error', [RuntimeError('send failed'),
+                                         asyncio.CancelledError()])
+def test_exported_sender_failure_never_mutates_init_template(
+        monkeypatch, send_error):
+    client, sent, _ = _exported_sender_fixture(
+        monkeypatch, send_error=send_error)
+    original_query = client._init_request.query
+
+    with pytest.raises(type(send_error)):
+        asyncio.run(TelegramBaseClient._create_exported_sender(client, 3))
+
+    assert client._init_request.query is original_query
+    assert len(sent) == 1
+    _assert_export_uses_full_cloned_template(client, sent[0], 3)
+
+
+def test_concurrent_exported_senders_use_independent_init_clones(monkeypatch):
+    client, sent, _ = _exported_sender_fixture(monkeypatch)
+    original_query = client._init_request.query
+
+    async def create_all():
+        return await asyncio.gather(*(
+            TelegramBaseClient._create_exported_sender(client, dc_id)
+            for dc_id in (2, 3, 4, 5)))
+
+    senders = asyncio.run(create_all())
+
+    assert len(senders) == len(sent) == 4
+    assert client._init_request.query is original_query
+    assert len({id(request.query) for request in sent}) == 4
+    for request in sent:
+        _assert_export_uses_full_cloned_template(
+            client, request, request.query.query.id)
 
 
 def _roundtrip(value):

@@ -62,7 +62,7 @@
   "generator_command": "python3 setup.py gen tl errors",
   "release": {
     "distribution": "Telethon",
-    "version": "1.45.0+tgsmm.layer231.2"
+    "version": "1.45.0+tgsmm.layer231.3"
   },
   "schema": {
     "constructors": 1725,

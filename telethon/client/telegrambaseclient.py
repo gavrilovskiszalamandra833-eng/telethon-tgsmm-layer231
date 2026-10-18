@@ -1,4 +1,5 @@
 import abc
+import copy
 import inspect
 import re
 import asyncio
@@ -849,8 +850,10 @@ class TelegramBaseClient(abc.ABC):
         ))
         self._log[__name__].info('Exporting auth for new borrowed sender in %s', dc)
         auth = await self(functions.auth.ExportAuthorizationRequest(dc_id))
-        self._init_request.query = functions.auth.ImportAuthorizationRequest(id=auth.id, bytes=auth.bytes)
-        req = functions.InvokeWithLayerRequest(LAYER, self._init_request)
+        init_request = copy.copy(self._init_request)
+        init_request.query = functions.auth.ImportAuthorizationRequest(
+            id=auth.id, bytes=auth.bytes)
+        req = functions.InvokeWithLayerRequest(LAYER, init_request)
         await sender.send(req)
         return sender
 

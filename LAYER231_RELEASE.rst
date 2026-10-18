@@ -6,7 +6,7 @@ Identity
 
 This repository is an audited Git-dependency fork of Telethon. It installs as
 the canonical ``Telethon`` distribution and retains the ``telethon`` import
-package. Its unique PEP 440 version is ``1.45.0+tgsmm.layer231.2``. Using the
+package. Its unique PEP 440 version is ``1.45.0+tgsmm.layer231.3``. Using the
 canonical distribution name lets requirements such as
 ``opentele-ng``'s ``telethon>=1.36,<2`` resolve to this fork without installing
 a second distribution that also owns the ``telethon`` namespace. Consumers
@@ -65,7 +65,13 @@ fixtures and the complete upstream suite with::
 In a clean environment, install ``opentele-ng`` and the fork wheel, then run
 ``python -m pip check``. ``importlib.metadata`` must report exactly one
 distribution providing the ``telethon`` package, named ``Telethon`` at version
-``1.45.0+tgsmm.layer231.2``.
+``1.45.0+tgsmm.layer231.3``.
+
+Exported senders clone the complete client ``InitConnection`` template before
+installing their ``auth.importAuthorization`` query. Borrowing one or several
+data-center senders therefore cannot replace the shared template query or lose
+its proxy, device, application, system, language, or client-parameter metadata,
+including when an import fails or is cancelled.
 
 The release fixtures cover the patched ``MessageService`` class carrying
 ``MessageActionGramTransfer``, ``UpdateWalletState``, ``UserFull.gram_address``,

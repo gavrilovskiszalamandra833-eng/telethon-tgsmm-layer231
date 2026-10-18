@@ -12,7 +12,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 MANIFEST = ROOT / 'generated-layer231-manifest.json'
 RELEASE_DISTRIBUTION = 'Telethon'
-RELEASE_VERSION = '1.45.0+tgsmm.layer231.2'
+RELEASE_VERSION = '1.45.0+tgsmm.layer231.3'
 SOURCE_FILES = (
     'telethon_generator/data/api.tl',
     'telethon_generator/data/mtproto.tl',
