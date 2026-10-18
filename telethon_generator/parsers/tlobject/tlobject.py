@@ -8,7 +8,16 @@ from ...utils import snake_to_camel_case
 WHITELISTED_MISMATCHING_IDS = {
     # 0 represents any layer
     0: {'channel',  # Since layer 77, there seems to be no going back...
-        'ipPortSecret', 'accessPointRule', 'help.configSimple'}
+        'ipPortSecret', 'accessPointRule', 'help.configSimple'},
+    # Decode-only aliases preserve recycled current-client response IDs while
+    # keeping the canonical layer-231 constructors registered under their
+    # original names. Their explicit IDs intentionally cannot match the CRC of
+    # the unique compatibility predicate names.
+    231: {
+        'userFullCurrentClientCompat',
+        'walletUserAddressCurrentClientCompat',
+        'walletTransactionCurrentClientCompat',
+    },
 }
 
 

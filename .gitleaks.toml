@@ -1,0 +1,8 @@
+[extend]
+useDefault = true
+
+[allowlist]
+description = "Deterministic generated-file checksums"
+paths = [
+  '''^generated-layer231-manifest\.json$''',
+]

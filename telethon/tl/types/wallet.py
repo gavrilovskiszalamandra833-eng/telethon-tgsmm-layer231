@@ -5,7 +5,8 @@ import os
 import struct
 from datetime import datetime
 if TYPE_CHECKING:
-    from ...tl.types import TypeChat, TypeUser, TypeWalletTransaction
+    from ...tl.types import TypeChat, TypeDataJSON, TypeTonConnectRequest, TypeTonConnectSession, TypeUser, TypeWalletTransaction, TypeWalletUserAddress, TypeWebDocument
+    from ...tl.types.wallet import TypeNftAttribute, TypeNftItem
 
 
 
@@ -35,6 +36,40 @@ class EncryptedSecretPhrasePart(TLObject):
     def from_reader(cls, reader):
         _data = reader.tgread_bytes()
         return cls(data=_data)
+
+
+class ExistingBalance(TLObject):
+    CONSTRUCTOR_ID = 0xbde90a8d
+    SUBCLASS_OF_ID = 0xa739fa56
+
+    def __init__(self, url: str, has_balance: Optional[bool]=None):
+        """
+        Constructor for wallet.ExistingBalance: Instance of ExistingBalance.
+        """
+        self.url = url
+        self.has_balance = has_balance
+
+    def to_dict(self):
+        return {
+            '_': 'ExistingBalance',
+            'url': self.url,
+            'has_balance': self.has_balance
+        }
+
+    def _bytes(self):
+        return b''.join((
+            b'\x8d\n\xe9\xbd',
+            struct.pack('<I', (0 if self.has_balance is None or self.has_balance is False else 1)),
+            self.serialize_bytes(self.url),
+        ))
+
+    @classmethod
+    def from_reader(cls, reader):
+        flags = reader.read_int()
+
+        _has_balance = bool(flags & 1)
+        _url = reader.tgread_string()
+        return cls(url=_url, has_balance=_has_balance)
 
 
 class HolderDc(TLObject):
@@ -67,6 +102,225 @@ class HolderDc(TLObject):
         _dc = reader.read_int()
         _public_key = reader.tgread_bytes()
         return cls(dc=_dc, public_key=_public_key)
+
+
+class NftAttribute(TLObject):
+    CONSTRUCTOR_ID = 0x4c1ef10e
+    SUBCLASS_OF_ID = 0x530e1841
+
+    def __init__(self, trait_type: str, value: str):
+        """
+        Constructor for wallet.NftAttribute: Instance of NftAttribute.
+        """
+        self.trait_type = trait_type
+        self.value = value
+
+    def to_dict(self):
+        return {
+            '_': 'NftAttribute',
+            'trait_type': self.trait_type,
+            'value': self.value
+        }
+
+    def _bytes(self):
+        return b''.join((
+            b'\x0e\xf1\x1eL',
+            self.serialize_bytes(self.trait_type),
+            self.serialize_bytes(self.value),
+        ))
+
+    @classmethod
+    def from_reader(cls, reader):
+        _trait_type = reader.tgread_string()
+        _value = reader.tgread_string()
+        return cls(trait_type=_trait_type, value=_value)
+
+
+class NftItem(TLObject):
+    CONSTRUCTOR_ID = 0x3441fd1c
+    SUBCLASS_OF_ID = 0xd4319a36
+
+    def __init__(self, address: str, owner_address: str, index: str, collection_address: Optional[str]=None, name: Optional[str]=None, description: Optional[str]=None, image: Optional['TypeWebDocument']=None, image_small: Optional['TypeWebDocument']=None, content_url: Optional['TypeWebDocument']=None, lottie: Optional['TypeWebDocument']=None, attributes: Optional[List['TypeNftAttribute']]=None, extra: Optional['TypeDataJSON']=None):
+        """
+        Constructor for wallet.NftItem: Instance of NftItem.
+        """
+        self.address = address
+        self.owner_address = owner_address
+        self.index = index
+        self.collection_address = collection_address
+        self.name = name
+        self.description = description
+        self.image = image
+        self.image_small = image_small
+        self.content_url = content_url
+        self.lottie = lottie
+        self.attributes = attributes
+        self.extra = extra
+
+    def to_dict(self):
+        return {
+            '_': 'NftItem',
+            'address': self.address,
+            'owner_address': self.owner_address,
+            'index': self.index,
+            'collection_address': self.collection_address,
+            'name': self.name,
+            'description': self.description,
+            'image': self.image.to_dict() if isinstance(self.image, TLObject) else self.image,
+            'image_small': self.image_small.to_dict() if isinstance(self.image_small, TLObject) else self.image_small,
+            'content_url': self.content_url.to_dict() if isinstance(self.content_url, TLObject) else self.content_url,
+            'lottie': self.lottie.to_dict() if isinstance(self.lottie, TLObject) else self.lottie,
+            'attributes': [] if self.attributes is None else [x.to_dict() if isinstance(x, TLObject) else x for x in self.attributes],
+            'extra': self.extra.to_dict() if isinstance(self.extra, TLObject) else self.extra
+        }
+
+    def _bytes(self):
+        return b''.join((
+            b'\x1c\xfdA4',
+            struct.pack('<I', (0 if self.collection_address is None or self.collection_address is False else 1) | (0 if self.name is None or self.name is False else 2) | (0 if self.description is None or self.description is False else 4) | (0 if self.image is None or self.image is False else 8) | (0 if self.image_small is None or self.image_small is False else 16) | (0 if self.content_url is None or self.content_url is False else 32) | (0 if self.lottie is None or self.lottie is False else 64) | (0 if self.attributes is None or self.attributes is False else 128) | (0 if self.extra is None or self.extra is False else 256)),
+            b'' if self.collection_address is None or self.collection_address is False else (self.serialize_bytes(self.collection_address)),
+            self.serialize_bytes(self.address),
+            self.serialize_bytes(self.owner_address),
+            self.serialize_bytes(self.index),
+            b'' if self.name is None or self.name is False else (self.serialize_bytes(self.name)),
+            b'' if self.description is None or self.description is False else (self.serialize_bytes(self.description)),
+            b'' if self.image is None or self.image is False else (self.image._bytes()),
+            b'' if self.image_small is None or self.image_small is False else (self.image_small._bytes()),
+            b'' if self.content_url is None or self.content_url is False else (self.content_url._bytes()),
+            b'' if self.lottie is None or self.lottie is False else (self.lottie._bytes()),
+            b'' if self.attributes is None or self.attributes is False else b''.join((b'\x15\xc4\xb5\x1c',struct.pack('<i', len(self.attributes)),b''.join(x._bytes() for x in self.attributes))),
+            b'' if self.extra is None or self.extra is False else (self.extra._bytes()),
+        ))
+
+    @classmethod
+    def from_reader(cls, reader):
+        flags = reader.read_int()
+
+        if flags & 1:
+            _collection_address = reader.tgread_string()
+        else:
+            _collection_address = None
+        _address = reader.tgread_string()
+        _owner_address = reader.tgread_string()
+        _index = reader.tgread_string()
+        if flags & 2:
+            _name = reader.tgread_string()
+        else:
+            _name = None
+        if flags & 4:
+            _description = reader.tgread_string()
+        else:
+            _description = None
+        if flags & 8:
+            _image = reader.tgread_object()
+        else:
+            _image = None
+        if flags & 16:
+            _image_small = reader.tgread_object()
+        else:
+            _image_small = None
+        if flags & 32:
+            _content_url = reader.tgread_object()
+        else:
+            _content_url = None
+        if flags & 64:
+            _lottie = reader.tgread_object()
+        else:
+            _lottie = None
+        if flags & 128:
+            reader.read_int()
+            _attributes = []
+            for _ in range(reader.read_int()):
+                _x = reader.tgread_object()
+                _attributes.append(_x)
+
+        else:
+            _attributes = None
+        if flags & 256:
+            _extra = reader.tgread_object()
+        else:
+            _extra = None
+        return cls(address=_address, owner_address=_owner_address, index=_index, collection_address=_collection_address, name=_name, description=_description, image=_image, image_small=_image_small, content_url=_content_url, lottie=_lottie, attributes=_attributes, extra=_extra)
+
+
+class NftItems(TLObject):
+    CONSTRUCTOR_ID = 0x794d486f
+    SUBCLASS_OF_ID = 0xd4606b08
+
+    # noinspection PyShadowingBuiltins
+    def __init__(self, items: List['TypeNftItem'], next_offset: Optional[str]=None):
+        """
+        Constructor for wallet.NftItems: Instance of NftItems.
+        """
+        self.items = items
+        self.next_offset = next_offset
+
+    def to_dict(self):
+        return {
+            '_': 'NftItems',
+            'items': [] if self.items is None else [x.to_dict() if isinstance(x, TLObject) else x for x in self.items],
+            'next_offset': self.next_offset
+        }
+
+    def _bytes(self):
+        return b''.join((
+            b'oHMy',
+            struct.pack('<I', (0 if self.next_offset is None or self.next_offset is False else 1)),
+            b'\x15\xc4\xb5\x1c',struct.pack('<i', len(self.items)),b''.join(x._bytes() for x in self.items),
+            b'' if self.next_offset is None or self.next_offset is False else (self.serialize_bytes(self.next_offset)),
+        ))
+
+    @classmethod
+    def from_reader(cls, reader):
+        flags = reader.read_int()
+
+        reader.read_int()
+        _items = []
+        for _ in range(reader.read_int()):
+            _x = reader.tgread_object()
+            _items.append(_x)
+
+        if flags & 1:
+            _next_offset = reader.tgread_string()
+        else:
+            _next_offset = None
+        return cls(items=_items, next_offset=_next_offset)
+
+
+class ProofChallenge(TLObject):
+    CONSTRUCTOR_ID = 0x99e41707
+    SUBCLASS_OF_ID = 0xd8d15305
+
+    def __init__(self, payload: str, expires: Optional[datetime], domain: str):
+        """
+        Constructor for wallet.ProofChallenge: Instance of ProofChallenge.
+        """
+        self.payload = payload
+        self.expires = expires
+        self.domain = domain
+
+    def to_dict(self):
+        return {
+            '_': 'ProofChallenge',
+            'payload': self.payload,
+            'expires': self.expires,
+            'domain': self.domain
+        }
+
+    def _bytes(self):
+        return b''.join((
+            b'\x07\x17\xe4\x99',
+            self.serialize_bytes(self.payload),
+            self.serialize_datetime(self.expires),
+            self.serialize_bytes(self.domain),
+        ))
+
+    @classmethod
+    def from_reader(cls, reader):
+        _payload = reader.tgread_string()
+        _expires = reader.tgread_date()
+        _domain = reader.tgread_string()
+        return cls(payload=_payload, expires=_expires, domain=_domain)
 
 
 class SecretPhraseParts(TLObject):
@@ -104,6 +358,108 @@ class SecretPhraseParts(TLObject):
             _dcs.append(_x)
 
         return cls(token=_token, dcs=_dcs)
+
+
+class TonConnectChallenge(TLObject):
+    CONSTRUCTOR_ID = 0x4bc89693
+    SUBCLASS_OF_ID = 0x6fc97efe
+
+    def __init__(self, challenge: bytes, event_id: int):
+        """
+        Constructor for wallet.TonConnectChallenge: Instance of TonConnectChallenge.
+        """
+        self.challenge = challenge
+        self.event_id = event_id
+
+    def to_dict(self):
+        return {
+            '_': 'TonConnectChallenge',
+            'challenge': self.challenge,
+            'event_id': self.event_id
+        }
+
+    def _bytes(self):
+        return b''.join((
+            b'\x93\x96\xc8K',
+            self.serialize_bytes(self.challenge),
+            struct.pack('<q', self.event_id),
+        ))
+
+    @classmethod
+    def from_reader(cls, reader):
+        _challenge = reader.tgread_bytes()
+        _event_id = reader.read_long()
+        return cls(challenge=_challenge, event_id=_event_id)
+
+
+class TonConnectPending(TLObject):
+    CONSTRUCTOR_ID = 0x85c0f124
+    SUBCLASS_OF_ID = 0x81ebfc36
+
+    def __init__(self, session: 'TypeTonConnectSession', requests: List['TypeTonConnectRequest']):
+        """
+        Constructor for wallet.TonConnectPending: Instance of TonConnectPending.
+        """
+        self.session = session
+        self.requests = requests
+
+    def to_dict(self):
+        return {
+            '_': 'TonConnectPending',
+            'session': self.session.to_dict() if isinstance(self.session, TLObject) else self.session,
+            'requests': [] if self.requests is None else [x.to_dict() if isinstance(x, TLObject) else x for x in self.requests]
+        }
+
+    def _bytes(self):
+        return b''.join((
+            b'$\xf1\xc0\x85',
+            self.session._bytes(),
+            b'\x15\xc4\xb5\x1c',struct.pack('<i', len(self.requests)),b''.join(x._bytes() for x in self.requests),
+        ))
+
+    @classmethod
+    def from_reader(cls, reader):
+        _session = reader.tgread_object()
+        reader.read_int()
+        _requests = []
+        for _ in range(reader.read_int()):
+            _x = reader.tgread_object()
+            _requests.append(_x)
+
+        return cls(session=_session, requests=_requests)
+
+
+class TonConnectSessions(TLObject):
+    CONSTRUCTOR_ID = 0xe1f6896
+    SUBCLASS_OF_ID = 0xe7323d24
+
+    def __init__(self, sessions: List['TypeTonConnectSession']):
+        """
+        Constructor for wallet.TonConnectSessions: Instance of TonConnectSessions.
+        """
+        self.sessions = sessions
+
+    def to_dict(self):
+        return {
+            '_': 'TonConnectSessions',
+            'sessions': [] if self.sessions is None else [x.to_dict() if isinstance(x, TLObject) else x for x in self.sessions]
+        }
+
+    def _bytes(self):
+        return b''.join((
+            b'\x96h\x1f\x0e',
+            b'\x15\xc4\xb5\x1c',struct.pack('<i', len(self.sessions)),b''.join(x._bytes() for x in self.sessions),
+        ))
+
+    @classmethod
+    def from_reader(cls, reader):
+        reader.read_int()
+        _sessions = []
+        for _ in range(reader.read_int()):
+            _x = reader.tgread_object()
+            _sessions.append(_x)
+
+        return cls(sessions=_sessions)
 
 
 class Transactions(TLObject):
@@ -169,4 +525,46 @@ class Transactions(TLObject):
             _users.append(_x)
 
         return cls(balance=_balance, transactions=_transactions, chats=_chats, users=_users, next_offset=_next_offset)
+
+
+class UserAddresses(TLObject):
+    CONSTRUCTOR_ID = 0x928e7b55
+    SUBCLASS_OF_ID = 0xd6496be3
+
+    def __init__(self, addresses: List['TypeWalletUserAddress'], users: List['TypeUser']):
+        """
+        Constructor for wallet.UserAddresses: Instance of UserAddresses.
+        """
+        self.addresses = addresses
+        self.users = users
+
+    def to_dict(self):
+        return {
+            '_': 'UserAddresses',
+            'addresses': [] if self.addresses is None else [x.to_dict() if isinstance(x, TLObject) else x for x in self.addresses],
+            'users': [] if self.users is None else [x.to_dict() if isinstance(x, TLObject) else x for x in self.users]
+        }
+
+    def _bytes(self):
+        return b''.join((
+            b'U{\x8e\x92',
+            b'\x15\xc4\xb5\x1c',struct.pack('<i', len(self.addresses)),b''.join(x._bytes() for x in self.addresses),
+            b'\x15\xc4\xb5\x1c',struct.pack('<i', len(self.users)),b''.join(x._bytes() for x in self.users),
+        ))
+
+    @classmethod
+    def from_reader(cls, reader):
+        reader.read_int()
+        _addresses = []
+        for _ in range(reader.read_int()):
+            _x = reader.tgread_object()
+            _addresses.append(_x)
+
+        reader.read_int()
+        _users = []
+        for _ in range(reader.read_int()):
+            _x = reader.tgread_object()
+            _users.append(_x)
+
+        return cls(addresses=_addresses, users=_users)
 

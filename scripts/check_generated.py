@@ -12,13 +12,14 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 MANIFEST = ROOT / 'generated-layer231-manifest.json'
 RELEASE_DISTRIBUTION = 'Telethon'
-RELEASE_VERSION = '1.45.0+tgsmm.layer231.4'
+RELEASE_VERSION = '1.45.0+tgsmm.layer231.5'
 SOURCE_FILES = (
     'telethon_generator/data/api.tl',
     'telethon_generator/data/mtproto.tl',
     'telethon_generator/data/errors.csv',
     'telethon_generator/data/methods.csv',
     'telethon_generator/data/friendly.csv',
+    'telethon_generator/parsers/tlobject/tlobject.py',
 )
 GENERATED_FILES = (
     'telethon/tl/alltlobjects.py',

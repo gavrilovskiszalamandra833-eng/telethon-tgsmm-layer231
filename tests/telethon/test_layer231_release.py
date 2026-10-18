@@ -1,6 +1,7 @@
 import asyncio
 import json
 import logging
+import re
 import struct
 import traceback
 from datetime import datetime, timezone
@@ -23,6 +24,54 @@ from telethon.version import __version__
 
 ROOT = Path(__file__).resolve().parents[2]
 
+CURRENT_CLIENT_DECLARATIONS = {
+    'messageActionWalletTonConnectRequest': 'messageActionWalletTonConnectRequest#69b8c4bf flags:# accepted:flags.2?true declined:flags.3?true session_id:long expires:int topic:flags.0?string trace_id:flags.1?string dapp_name:flags.4?string = MessageAction;',
+    'textTonAddress': 'textTonAddress#3cd2a36a text:RichText = RichText;',
+    'updateSentWalletTransaction': 'updateSentWalletTransaction#b1434d4a flags:# gasless:flags.0?true msg_hash:string transaction:flags.1?WalletTransaction = Update;',
+    'updateWalletGaslessInfo': 'updateWalletGaslessInfo#a8ae1cac flags:# available:flags.0?true left:int reset_at:int min_amount:long relayer_address:string = Update;',
+    'updateWalletTonConnectSession': 'updateWalletTonConnectSession#50a38e0e session:TonConnectSession = Update;',
+    'updateWalletTonConnectPendingDisconnect': 'updateWalletTonConnectPendingDisconnect#d1ee8199 session_ids:Vector<long> = Update;',
+    'wallet.userAddresses': 'wallet.userAddresses#928e7b55 addresses:Vector<WalletUserAddress> users:Vector<User> = wallet.UserAddresses;',
+    'walletTransactionPeerOnramp': 'walletTransactionPeerOnramp#e595186e flags:# address:string domain:flags.0?string provider_name:string = WalletTransactionPeer;',
+    'wallet.proofChallenge': 'wallet.proofChallenge#99e41707 payload:string expires:int domain:string = wallet.ProofChallenge;',
+    'walletOwnershipProof': 'walletOwnershipProof#60bccb0d timestamp:int signature:bytes = WalletOwnershipProof;',
+    'tonConnectManifest': 'tonConnectManifest#12229264 flags:# url:string name:string icon:flags.0?WebDocument = TonConnectManifest;',
+    'tonConnectSession': 'tonConnectSession#126556c6 flags:# pending:flags.0?true closing:flags.1?true closed:flags.2?true id:long dapp_client_id:string client_id:flags.3?string nonce:bytes manifest:flags.4?TonConnectManifest manifest_error:flags.5?int date:int = TonConnectSession;',
+    'wallet.tonConnectChallenge': 'wallet.tonConnectChallenge#4bc89693 challenge:bytes event_id:long = wallet.TonConnectChallenge;',
+    'tonConnectNextEventId': 'tonConnectNextEventId#582464e3 event_id:long = TonConnectNextEventId;',
+    'tonConnectRequest': 'tonConnectRequest#a15f8513 flags:# session_id:long msg_id:int body:bytes expires:int topic:flags.0?string trace_id:flags.1?string = TonConnectRequest;',
+    'wallet.tonConnectPending': 'wallet.tonConnectPending#85c0f124 session:TonConnectSession requests:Vector<TonConnectRequest> = wallet.TonConnectPending;',
+    'wallet.tonConnectSessions': 'wallet.tonConnectSessions#e1f6896 sessions:Vector<TonConnectSession> = wallet.TonConnectSessions;',
+    'wallet.existingBalance': 'wallet.existingBalance#bde90a8d flags:# has_balance:flags.0?true url:string = wallet.ExistingBalance;',
+    'wallet.nftAttribute': 'wallet.nftAttribute#4c1ef10e trait_type:string value:string = wallet.NftAttribute;',
+    'wallet.nftItem': 'wallet.nftItem#3441fd1c flags:# collection_address:flags.0?string address:string owner_address:string index:string name:flags.1?string description:flags.2?string image:flags.3?WebDocument image_small:flags.4?WebDocument content_url:flags.5?WebDocument lottie:flags.6?WebDocument attributes:flags.7?Vector<wallet.NftAttribute> extra:flags.8?DataJSON = wallet.NftItem;',
+    'wallet.nftItems': 'wallet.nftItems#794d486f flags:# items:Vector<wallet.NftItem> next_offset:flags.0?string = wallet.NftItems;',
+}
+
+CURRENT_CLIENT_CLASSES = {
+    'messageActionWalletTonConnectRequest': types.MessageActionWalletTonConnectRequest,
+    'textTonAddress': types.TextTonAddress,
+    'updateSentWalletTransaction': types.UpdateSentWalletTransaction,
+    'updateWalletGaslessInfo': types.UpdateWalletGaslessInfo,
+    'updateWalletTonConnectSession': types.UpdateWalletTonConnectSession,
+    'updateWalletTonConnectPendingDisconnect': types.UpdateWalletTonConnectPendingDisconnect,
+    'wallet.userAddresses': types.wallet.UserAddresses,
+    'walletTransactionPeerOnramp': types.WalletTransactionPeerOnramp,
+    'wallet.proofChallenge': types.wallet.ProofChallenge,
+    'walletOwnershipProof': types.WalletOwnershipProof,
+    'tonConnectManifest': types.TonConnectManifest,
+    'tonConnectSession': types.TonConnectSession,
+    'wallet.tonConnectChallenge': types.wallet.TonConnectChallenge,
+    'tonConnectNextEventId': types.TonConnectNextEventId,
+    'tonConnectRequest': types.TonConnectRequest,
+    'wallet.tonConnectPending': types.wallet.TonConnectPending,
+    'wallet.tonConnectSessions': types.wallet.TonConnectSessions,
+    'wallet.existingBalance': types.wallet.ExistingBalance,
+    'wallet.nftAttribute': types.wallet.NftAttribute,
+    'wallet.nftItem': types.wallet.NftItem,
+    'wallet.nftItems': types.wallet.NftItems,
+}
+
 
 def test_release_uses_canonical_distribution_identity():
     pyproject = (ROOT / 'pyproject.toml').read_text(encoding='utf-8')
@@ -34,7 +83,7 @@ def test_release_uses_canonical_distribution_identity():
     assert "name='Telethon'" in setup_py
     assert 'Telethon-TGSMM-Layer231' not in pyproject
     assert 'Telethon-TGSMM-Layer231' not in setup_py
-    assert __version__ == '1.45.0+tgsmm.layer231.4'
+    assert __version__ == '1.45.0+tgsmm.layer231.5'
     assert manifest['release'] == {
         'distribution': 'Telethon',
         'version': __version__,
@@ -239,6 +288,190 @@ def test_message_entity_ton_address_registry_and_roundtrip():
     assert decoded_message.entities[0].length == 48
 
 
+def _nested_vector_roundtrip(value):
+    payload = struct.pack('<Ii', 0x1CB5C415, 1) + bytes(value)
+    with BinaryReader(payload) as reader:
+        decoded = reader.tgread_object()
+        assert reader.tell_position() == len(payload)
+    assert len(decoded) == 1
+    return decoded[0]
+
+
+def _current_client_fixtures():
+    timestamp = datetime(2026, 10, 18, tzinfo=timezone.utc)
+    manifest = types.TonConnectManifest(
+        url='https://fixture.invalid/manifest.json', name='fixture-dapp')
+    session = types.TonConnectSession(
+        id=231, dapp_client_id='fixture-client', nonce=b'nonce',
+        date=timestamp, manifest=manifest)
+    request = types.TonConnectRequest(
+        session_id=231, msg_id=5, body=b'fixture-body', expires=timestamp)
+    attribute = types.wallet.NftAttribute(
+        trait_type='fixture-trait', value='fixture-value')
+    nft = types.wallet.NftItem(
+        address='UQ-fixture-nft', owner_address='UQ-fixture-owner', index='1',
+        attributes=[attribute])
+    transaction = types.WalletTransaction(
+        id='fixture-transaction', amount=7, fee=1, date=timestamp,
+        peer=types.WalletTransactionPeerUnsupported())
+
+    return {
+        'messageActionWalletTonConnectRequest':
+            types.MessageActionWalletTonConnectRequest(
+                session_id=231, expires=timestamp, topic='fixture-topic'),
+        'textTonAddress': types.TextTonAddress(types.TextPlain('UQ-fixture')),
+        'updateSentWalletTransaction': types.UpdateSentWalletTransaction(
+            msg_hash='fixture-hash', transaction=transaction),
+        'updateWalletGaslessInfo': types.UpdateWalletGaslessInfo(
+            left=3, reset_at=123, min_amount=10,
+            relayer_address='UQ-fixture-relayer', available=True),
+        'updateWalletTonConnectSession':
+            types.UpdateWalletTonConnectSession(session),
+        'updateWalletTonConnectPendingDisconnect':
+            types.UpdateWalletTonConnectPendingDisconnect([231]),
+        'wallet.userAddresses': types.wallet.UserAddresses(
+            [types.WalletUserAddress(1001, 'UQ-fixture-address')], []),
+        'walletTransactionPeerOnramp': types.WalletTransactionPeerOnramp(
+            address='UQ-fixture-onramp', provider_name='fixture-provider'),
+        'wallet.proofChallenge': types.wallet.ProofChallenge(
+            payload='fixture-payload', expires=timestamp,
+            domain='fixture.invalid'),
+        'walletOwnershipProof': types.WalletOwnershipProof(
+            timestamp=123, signature=b'fixture-signature'),
+        'tonConnectManifest': manifest,
+        'tonConnectSession': session,
+        'wallet.tonConnectChallenge': types.wallet.TonConnectChallenge(
+            challenge=b'fixture-challenge', event_id=9),
+        'tonConnectNextEventId': types.TonConnectNextEventId(event_id=10),
+        'tonConnectRequest': request,
+        'wallet.tonConnectPending': types.wallet.TonConnectPending(
+            session=session, requests=[request]),
+        'wallet.tonConnectSessions': types.wallet.TonConnectSessions([session]),
+        'wallet.existingBalance': types.wallet.ExistingBalance(
+            url='https://fixture.invalid/balance', has_balance=True),
+        'wallet.nftAttribute': attribute,
+        'wallet.nftItem': nft,
+        'wallet.nftItems': types.wallet.NftItems([nft], next_offset='fixture-next'),
+    }
+
+
+def test_current_client_incoming_compatibility_audit_is_21_of_21():
+    schema_lines = {
+        line.strip() for line in
+        (ROOT / 'telethon_generator/data/api.tl').read_text(
+            encoding='utf-8').splitlines()
+    }
+    fixtures = _current_client_fixtures()
+
+    assert len(CURRENT_CLIENT_DECLARATIONS) == 21
+    assert CURRENT_CLIENT_DECLARATIONS.keys() == CURRENT_CLIENT_CLASSES.keys()
+    assert CURRENT_CLIENT_DECLARATIONS.keys() == fixtures.keys()
+    for name, declaration in CURRENT_CLIENT_DECLARATIONS.items():
+        cls = CURRENT_CLIENT_CLASSES[name]
+        constructor_id = int(declaration.split('#', 1)[1].split()[0], 16)
+        assert declaration in schema_lines
+        assert cls.CONSTRUCTOR_ID == constructor_id
+        assert alltlobjects.tlobjects[constructor_id] is cls
+
+
+@pytest.mark.parametrize('name', CURRENT_CLIENT_DECLARATIONS)
+def test_every_current_client_incoming_type_direct_and_nested_decodes(name):
+    value = _current_client_fixtures()[name]
+    cls = CURRENT_CLIENT_CLASSES[name]
+
+    assert isinstance(_roundtrip(value), cls)
+    assert isinstance(_nested_vector_roundtrip(value), cls)
+
+
+def test_schema_and_generated_registry_have_no_duplicate_ids_or_names():
+    declaration = re.compile(r'^([\w.]+)#([0-9a-fA-F]+)')
+    entries = []
+    for path in (
+            ROOT / 'telethon_generator/data/api.tl',
+            ROOT / 'telethon_generator/data/mtproto.tl'):
+        for line in path.read_text(encoding='utf-8').splitlines():
+            match = declaration.match(line.strip())
+            if match:
+                entries.append((match.group(1), int(match.group(2), 16)))
+
+    names = [name for name, _ in entries]
+    constructor_ids = [constructor_id for _, constructor_id in entries]
+    assert len(names) == len(set(names))
+    assert len(constructor_ids) == len(set(constructor_ids))
+
+    generated_classes = list(alltlobjects.tlobjects.values())
+    generated_names = [
+        '{}.{}'.format(cls.__module__, cls.__qualname__)
+        for cls in generated_classes
+    ]
+    assert len(alltlobjects.tlobjects) == len(set(alltlobjects.tlobjects))
+    assert len(generated_classes) == len(set(generated_classes))
+    assert len(generated_names) == len(set(generated_names))
+
+
+@pytest.mark.parametrize(('canonical', 'compatibility', 'canonical_id', 'compatibility_id'), [
+    (types.UserFull, types.UserFullCurrentClientCompat, 0x7FE738C4, 0x06CBE645),
+    (types.WalletUserAddress, types.WalletUserAddressCurrentClientCompat,
+     0x1CE00108, 0xFE78EECC),
+    (types.WalletTransaction, types.WalletTransactionCurrentClientCompat,
+     0x6F9986A1, 0x952DC143),
+])
+def test_recycled_response_ids_coexist_and_decode_nested(
+        canonical, compatibility, canonical_id, compatibility_id):
+    timestamp = datetime(2026, 10, 18, tzinfo=timezone.utc)
+    peer = types.WalletTransactionPeerUnsupported()
+    if canonical is types.UserFull:
+        canonical_value = canonical(
+            id=1001, settings=types.PeerSettings(),
+            notify_settings=types.PeerNotifySettings(), common_chats_count=0,
+            gram_address='UQ-layer231')
+        compatibility_value = compatibility(
+            id=1001, settings=types.PeerSettings(),
+            notify_settings=types.PeerNotifySettings(), common_chats_count=0)
+    elif canonical is types.WalletUserAddress:
+        canonical_value = canonical(1001, 'UQ-layer231')
+        compatibility_value = compatibility(
+            address='UQ-current-client', public_key=b'fixture-public-key',
+            user_id=1001)
+    else:
+        canonical_value = canonical(
+            id='layer231', amount=5, fee=1, date=timestamp, peer=peer)
+        compatibility_value = compatibility(
+            id='current-client', amount=6, fee=1, date=timestamp, peer=peer,
+            gasless=True)
+
+    assert canonical.CONSTRUCTOR_ID == canonical_id
+    assert compatibility.CONSTRUCTOR_ID == compatibility_id
+    assert alltlobjects.tlobjects[canonical_id] is canonical
+    assert alltlobjects.tlobjects[compatibility_id] is compatibility
+    assert isinstance(_roundtrip(canonical_value), canonical)
+    assert isinstance(_roundtrip(compatibility_value), compatibility)
+    assert isinstance(_nested_vector_roundtrip(canonical_value), canonical)
+    assert isinstance(_nested_vector_roundtrip(compatibility_value), compatibility)
+
+    if canonical is types.UserFull:
+        canonical_parent = types.users.UserFull(canonical_value, [], [])
+        compatibility_parent = types.users.UserFull(compatibility_value, [], [])
+        canonical_nested = _roundtrip(canonical_parent).full_user
+        compatibility_nested = _roundtrip(compatibility_parent).full_user
+    elif canonical is types.WalletUserAddress:
+        canonical_parent = types.wallet.UserAddresses([canonical_value], [])
+        compatibility_parent = types.wallet.UserAddresses(
+            [compatibility_value], [])
+        canonical_nested = _roundtrip(canonical_parent).addresses[0]
+        compatibility_nested = _roundtrip(compatibility_parent).addresses[0]
+    else:
+        canonical_parent = types.UpdateSentWalletTransaction(
+            msg_hash='canonical-fixture', transaction=canonical_value)
+        compatibility_parent = types.UpdateSentWalletTransaction(
+            msg_hash='compatibility-fixture', transaction=compatibility_value)
+        canonical_nested = _roundtrip(canonical_parent).transaction
+        compatibility_nested = _roundtrip(compatibility_parent).transaction
+
+    assert isinstance(canonical_nested, canonical)
+    assert isinstance(compatibility_nested, compatibility)
+
+
 @pytest.mark.parametrize(('name', 'constructor_id'), [
     ('MessageActionGramTransfer', 0x9329EA33),
     ('UpdateWalletState', 0x6AC3F2AA),
@@ -247,6 +480,11 @@ def test_message_entity_ton_address_registry_and_roundtrip():
 ])
 def test_layer231_constructor_ids(name, constructor_id):
     assert getattr(types, name).CONSTRUCTOR_ID == constructor_id
+
+
+def test_regeneration_preserves_patched_message_registry():
+    assert types.Message.__module__ == 'telethon.tl.patched'
+    assert alltlobjects.tlobjects[types.Message.CONSTRUCTOR_ID] is types.Message
 
 
 def test_unknown_constructor_error_never_retains_or_formats_payload():
