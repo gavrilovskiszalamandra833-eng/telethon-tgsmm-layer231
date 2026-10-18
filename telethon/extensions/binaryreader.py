@@ -13,22 +13,27 @@ _EPOCH_NAIVE = datetime(*time.gmtime(0)[:6])
 _EPOCH = _EPOCH_NAIVE.replace(tzinfo=timezone.utc)
 
 
-class BinaryReaderBufferError(BufferError):
-    """A truncated read error that never retains or formats wire bytes."""
+# Keep the named compatibility surface while raising the exact builtin type.
+# Some callers compare ``type(error) is BufferError`` rather than using
+# ``isinstance``, and the layer-231 release audit preserves that behaviour.
+BinaryReaderBufferError = BufferError
 
-    def __init__(self, value_type, expected_length, available_length,
-                 constructor_id=None):
-        message = (
-            'Not enough data to read {} (expected {} bytes, available {} bytes)'
-            .format(value_type, expected_length, available_length))
-        if constructor_id is not None:
-            message += ' while decoding constructor {:08x}'.format(
-                constructor_id)
-        super().__init__(message)
-        self.value_type = value_type
-        self.expected_length = expected_length
-        self.available_length = available_length
-        self.constructor_id = constructor_id
+
+def _buffer_error(value_type, expected_length, available_length,
+                  constructor_id=None):
+    """Build a truncated-read error containing metadata, never wire bytes."""
+    message = (
+        'Not enough data to read {} (expected {} bytes, available {} bytes)'
+        .format(value_type, expected_length, available_length))
+    if constructor_id is not None:
+        message += ' while decoding constructor {:08x}'.format(constructor_id)
+
+    error = BinaryReaderBufferError(message)
+    error.value_type = value_type
+    error.expected_length = expected_length
+    error.available_length = available_length
+    error.constructor_id = constructor_id
+    return error
 
 
 class BinaryReader:
@@ -90,7 +95,7 @@ class BinaryReader:
             result = self.stream[self.position:]
             self.position += len(result)
         if (length >= 0) and (len(result) != length):
-            raise BinaryReaderBufferError(
+            raise _buffer_error(
                 _value_type,
                 length,
                 len(result),

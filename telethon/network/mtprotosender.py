@@ -20,6 +20,7 @@ from ..errors import (
 )
 from ..extensions import BinaryReader
 from ..tl.core import RpcResult, MessageContainer, GzipPacked
+from ..tl.core.gzippacked import GzipPackedError
 from ..tl.functions.auth import LogOutRequest
 from ..tl.functions import PingRequest, DestroySessionRequest, DestroyAuthKeyRequest
 from ..tl.types import (
@@ -573,6 +574,12 @@ class MTProtoSender:
                 else:
                     self._log.warning('Invalid buffer %s', e)
                     self._start_reconnect(e)
+                return
+            except GzipPackedError as e:
+                self._log.warning(
+                    'Malformed gzip-packed data (length %d bytes, error %s)',
+                    e.compressed_length, e.decompressor_error)
+                self._start_reconnect(e)
                 return
             except Exception as e:
                 self._log.exception('Unhandled error while decrypting data')

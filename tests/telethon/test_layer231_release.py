@@ -9,9 +9,11 @@ import pytest
 
 from telethon.errors import InvalidBufferError, TypeNotFoundError
 from telethon.extensions import BinaryReader
+from telethon.extensions.binaryreader import BinaryReaderBufferError
 from telethon.network.mtprotosender import MTProtoSender, _log_type_not_found
-from telethon.tl import types
-from telethon.tl.core import RpcResult
+from telethon.tl import TLObject, types
+from telethon.tl.core import GzipPacked, RpcResult
+from telethon.tl.core.gzippacked import GzipPackedError
 
 
 def _roundtrip(value):
@@ -174,6 +176,16 @@ def test_binary_reader_truncation_reports_only_safe_metadata():
         secret)
 
 
+def test_binary_reader_buffer_error_keeps_builtin_compatibility():
+    assert issubclass(BinaryReaderBufferError, BufferError)
+
+    with pytest.raises(BufferError) as raised:
+        BinaryReader(b'x').read(2)
+
+    # The release audit and existing callers expect the builtin error type.
+    assert type(raised.value) is BufferError
+
+
 def test_binary_reader_truncation_does_not_format_previous_read():
     secret = b'previous-read-secret'
     reader = BinaryReader(secret)
@@ -333,6 +345,74 @@ def test_sender_receive_log_does_not_expose_decrypted_payload(caplog):
     assert error.value_type == 'bytes'
     assert error.expected_length == len(secret) + 5
     assert error.available_length == len(secret)
+    _assert_payload_is_absent(str(error), secret)
+    _assert_payload_is_absent(repr(error), secret)
+    _assert_payload_is_absent(caplog.text, secret)
+
+
+def _malformed_gzip_packet(payload):
+    return (
+        struct.pack('<I', GzipPacked.CONSTRUCTOR_ID)
+        + TLObject.serialize_bytes(payload)
+    )
+
+
+def test_malformed_gzip_error_exposes_only_safe_metadata():
+    secret = b'Q7V4N2X9-gzip-sentinel-742b1d09'
+
+    with pytest.raises(GzipPackedError) as raised:
+        BinaryReader(_malformed_gzip_packet(secret)).tgread_object()
+
+    error = raised.value
+    assert error.compressed_length == len(secret)
+    assert error.decompressor_error in {'BadGzipFile', 'error'}
+    assert error.__cause__ is None
+    assert error.__context__ is None
+    rendered = ''.join((
+        str(error), repr(error), repr(vars(error)),
+        ''.join(traceback.format_exception(type(error), error, error.__traceback__)),
+    ))
+    _assert_payload_is_absent(rendered, secret)
+
+
+def test_sender_receive_loop_malformed_gzip_is_sanitized(caplog):
+    secret = b'recv-malformed-gzip-sentinel-c94f38a2'
+    packet = _malformed_gzip_packet(secret)
+    logger = logging.getLogger('telethon.layer231.safe-gzip-receive-path')
+    reconnect_errors = []
+
+    class Connection:
+        @staticmethod
+        async def recv():
+            return packet
+
+    class State:
+        @staticmethod
+        def decrypt_message_data(body):
+            return BinaryReader(body).tgread_object()
+
+    async def run():
+        sender = object.__new__(MTProtoSender)
+        sender._user_connected = True
+        sender._reconnecting = False
+        sender._connection = Connection()
+        sender._state = State()
+        sender._log = logger
+        sender._start_reconnect = reconnect_errors.append
+        await sender._recv_loop()
+
+    caplog.set_level(logging.WARNING, logger=logger.name)
+    asyncio.run(run())
+
+    assert len(reconnect_errors) == 1
+    error = reconnect_errors[0]
+    assert isinstance(error, GzipPackedError)
+    assert error.compressed_length == len(secret)
+    assert error.__cause__ is None
+    assert error.__context__ is None
+    assert caplog.messages == [
+        'Malformed gzip-packed data (length {} bytes, error {})'.format(
+            len(secret), error.decompressor_error)]
     _assert_payload_is_absent(str(error), secret)
     _assert_payload_is_absent(repr(error), secret)
     _assert_payload_is_absent(caplog.text, secret)

@@ -7,6 +7,29 @@ import struct
 from .. import TLObject
 
 
+class GzipPackedError(ValueError):
+    """A malformed gzip error containing no compressed wire bytes."""
+
+    def __init__(self, compressed_length, decompressor_error):
+        super().__init__(
+            'Could not decompress gzip-packed data (length {} bytes, error {})'
+            .format(compressed_length, decompressor_error))
+        self.compressed_length = compressed_length
+        self.decompressor_error = decompressor_error
+
+
+def _decompress(data):
+    try:
+        return gzip.decompress(data)
+    except Exception as error:
+        # gzip.BadGzipFile embeds input bytes in its message. Keep only the
+        # exception class, then raise outside the handler so no unsafe error is
+        # retained through __context__ or rendered as chained traceback text.
+        error_type = type(error).__name__
+
+    raise GzipPackedError(len(data), error_type)
+
+
 class GzipPacked(TLObject):
     CONSTRUCTOR_ID = 0x3072cfa1
 
@@ -35,11 +58,11 @@ class GzipPacked(TLObject):
     def read(reader):
         constructor = reader.read_int(signed=False)
         assert constructor == GzipPacked.CONSTRUCTOR_ID
-        return gzip.decompress(reader.tgread_bytes())
+        return _decompress(reader.tgread_bytes())
 
     @classmethod
     def from_reader(cls, reader):
-        return GzipPacked(gzip.decompress(reader.tgread_bytes()))
+        return GzipPacked(_decompress(reader.tgread_bytes()))
 
     def to_dict(self):
         return {
