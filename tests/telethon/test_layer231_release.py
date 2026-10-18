@@ -1,12 +1,13 @@
 import asyncio
 import logging
 import struct
+import traceback
 from datetime import datetime, timezone
 from types import SimpleNamespace
 
 import pytest
 
-from telethon.errors import TypeNotFoundError
+from telethon.errors import InvalidBufferError, TypeNotFoundError
 from telethon.extensions import BinaryReader
 from telethon.network.mtprotosender import MTProtoSender, _log_type_not_found
 from telethon.tl import types
@@ -144,3 +145,194 @@ def test_orphan_error_log_has_only_constructor_id_and_length(caplog):
         'Received error without parent request: constructor {}, length {}'.format(
             format(error.CONSTRUCTOR_ID, '08x'), len(bytes(error)))]
     assert secret not in caplog.text
+
+
+def _assert_payload_is_absent(text, secret):
+    fragments = {secret, secret[:8], secret[-8:]}
+    for fragment in fragments:
+        if fragment:
+            assert fragment.decode() not in text
+            assert repr(fragment) not in text
+
+
+def test_binary_reader_truncation_reports_only_safe_metadata():
+    secret = b'binary-reader-secret'
+    reader = BinaryReader(secret)
+
+    with pytest.raises(BufferError) as raised:
+        reader.read(len(secret) + 7)
+
+    error = raised.value
+    assert error.value_type == 'bytes'
+    assert error.expected_length == len(secret) + 7
+    assert error.available_length == len(secret)
+    assert error.constructor_id is None
+    _assert_payload_is_absent(str(error), secret)
+    _assert_payload_is_absent(repr(error), secret)
+    _assert_payload_is_absent(
+        ''.join(traceback.format_exception(type(error), error, error.__traceback__)),
+        secret)
+
+
+def test_binary_reader_truncation_does_not_format_previous_read():
+    secret = b'previous-read-secret'
+    reader = BinaryReader(secret)
+    assert reader.read(len(secret)) == secret
+
+    with pytest.raises(BufferError) as raised:
+        reader.read(1)
+
+    _assert_payload_is_absent(str(raised.value), secret)
+    assert reader._last == len(secret)
+
+
+def test_binary_reader_typed_truncation_includes_constructor_metadata():
+    secret = b'typed-secret'
+    constructor_id = types.PeerUser.CONSTRUCTOR_ID
+    payload = struct.pack('<I', constructor_id) + secret[:3]
+
+    with pytest.raises(BufferError) as raised:
+        BinaryReader(payload).tgread_object()
+
+    error = raised.value
+    assert error.value_type == 'long'
+    assert error.expected_length == 8
+    assert error.available_length == 3
+    assert error.constructor_id == constructor_id
+    assert format(constructor_id, '08x') in str(error)
+    _assert_payload_is_absent(str(error), secret[:3])
+
+
+def test_binary_reader_vector_truncation_includes_vector_constructor_only():
+    secret = b'vector-payload-sentinel'
+    constructor_id = 0x1cb5c415
+    payload = struct.pack('<I', constructor_id) + secret[:3]
+
+    with pytest.raises(BufferError) as raised:
+        BinaryReader(payload).tgread_object()
+
+    error = raised.value
+    assert error.value_type == 'int'
+    assert error.expected_length == 4
+    assert error.available_length == 3
+    assert error.constructor_id == constructor_id
+    assert format(constructor_id, '08x') in str(error)
+    _assert_payload_is_absent(str(error), secret[:3])
+
+
+@pytest.mark.parametrize(('method', 'value_type', 'expected_length'), [
+    ('read_byte', 'byte', 1),
+    ('read_int', 'int', 4),
+    ('read_long', 'long', 8),
+    ('read_float', 'float', 4),
+    ('read_double', 'double', 8),
+])
+def test_binary_reader_fixed_width_truncation_is_sanitized(
+        method, value_type, expected_length):
+    secret = b'X' * (expected_length - 1)
+
+    with pytest.raises(BufferError) as raised:
+        getattr(BinaryReader(secret), method)()
+
+    error = raised.value
+    assert error.value_type == value_type
+    assert error.expected_length == expected_length
+    assert error.available_length == len(secret)
+    _assert_payload_is_absent(str(error), secret)
+
+
+def test_binary_reader_large_int_truncation_is_sanitized():
+    secret = b'large-int-secret'
+
+    with pytest.raises(BufferError) as raised:
+        BinaryReader(secret).read_large_int(256)
+
+    error = raised.value
+    assert error.value_type == 'large int'
+    assert error.expected_length == 32
+    assert error.available_length == len(secret)
+    _assert_payload_is_absent(str(error), secret)
+
+
+def test_invalid_buffer_error_never_retains_or_formats_payload():
+    secret = b'invalid-buffer-secret'
+    error = InvalidBufferError(secret)
+
+    assert error.value_type == 'response buffer'
+    assert error.available_length == len(secret)
+    assert error.expected_length == 8
+    assert error.constructor_id is None
+    assert not isinstance(getattr(error, 'payload', None), bytes)
+    _assert_payload_is_absent(str(error), secret)
+    _assert_payload_is_absent(repr(error), secret)
+
+
+def test_sender_exception_and_sentry_style_log_do_not_expose_payload(caplog):
+    secret = b'sender-decrypted-secret'
+    logger = logging.getLogger('telethon.layer231.sender-truncation')
+
+    class TruncatedRequest:
+        @staticmethod
+        def read_result(reader):
+            return reader.read(len(secret) + 9)
+
+    async def run():
+        loop = asyncio.get_running_loop()
+        future = loop.create_future()
+        state = SimpleNamespace(request=TruncatedRequest(), future=future)
+        sender = object.__new__(MTProtoSender)
+        sender._pending_state = {123: state}
+        sender._log = logger
+        message = SimpleNamespace(obj=RpcResult(123, secret, None))
+        await sender._handle_rpc_result(message)
+        error = future.exception()
+        logger.error(
+            'Sentry-style captured sender failure',
+            exc_info=(type(error), error, error.__traceback__))
+        return error
+
+    caplog.set_level(logging.ERROR, logger=logger.name)
+    error = asyncio.run(run())
+
+    assert error.available_length == len(secret)
+    _assert_payload_is_absent(str(error), secret)
+    _assert_payload_is_absent(repr(error), secret)
+    _assert_payload_is_absent(caplog.text, secret)
+
+
+def test_sender_receive_log_does_not_expose_decrypted_payload(caplog):
+    secret = b'recv-loop-sentinel-91af37cd'
+    logger = logging.getLogger('telethon.layer231.safe-receive-path')
+    reconnect_errors = []
+
+    class Connection:
+        @staticmethod
+        async def recv():
+            return secret
+
+    class State:
+        @staticmethod
+        def decrypt_message_data(body):
+            return BinaryReader(body).read(len(body) + 5)
+
+    async def run():
+        sender = object.__new__(MTProtoSender)
+        sender._user_connected = True
+        sender._reconnecting = False
+        sender._connection = Connection()
+        setattr(sender, '_state', State())
+        sender._log = logger
+        setattr(sender, '_start_reconnect', reconnect_errors.append)
+        await sender._recv_loop()
+
+    caplog.set_level(logging.WARNING, logger=logger.name)
+    asyncio.run(run())
+
+    assert len(reconnect_errors) == 1
+    error = reconnect_errors[0]
+    assert error.value_type == 'bytes'
+    assert error.expected_length == len(secret) + 5
+    assert error.available_length == len(secret)
+    _assert_payload_is_absent(str(error), secret)
+    _assert_payload_is_absent(repr(error), secret)
+    _assert_payload_is_absent(caplog.text, secret)

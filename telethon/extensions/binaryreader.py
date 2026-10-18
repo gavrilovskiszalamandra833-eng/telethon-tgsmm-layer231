@@ -13,6 +13,24 @@ _EPOCH_NAIVE = datetime(*time.gmtime(0)[:6])
 _EPOCH = _EPOCH_NAIVE.replace(tzinfo=timezone.utc)
 
 
+class BinaryReaderBufferError(BufferError):
+    """A truncated read error that never retains or formats wire bytes."""
+
+    def __init__(self, value_type, expected_length, available_length,
+                 constructor_id=None):
+        message = (
+            'Not enough data to read {} (expected {} bytes, available {} bytes)'
+            .format(value_type, expected_length, available_length))
+        if constructor_id is not None:
+            message += ' while decoding constructor {:08x}'.format(
+                constructor_id)
+        super().__init__(message)
+        self.value_type = value_type
+        self.expected_length = expected_length
+        self.available_length = available_length
+        self.constructor_id = constructor_id
+
+
 class BinaryReader:
     """
     Small utility class to read binary data.
@@ -21,7 +39,10 @@ class BinaryReader:
     def __init__(self, data):
         self.stream = data or b''
         self.position = 0
-        self._last = None  # Should come in handy to spot -404 errors
+        # Retain only metadata about reads. Keeping the bytes here makes them
+        # reachable from exceptions and diagnostic tooling that captures locals.
+        self._last = None
+        self._constructor_ids = []
 
     # region Reading
 
@@ -29,42 +50,38 @@ class BinaryReader:
     # https://core.telegram.org/mtproto
     def read_byte(self):
         """Reads a single byte value."""
-        value, = struct.unpack_from("<B", self.stream, self.position)
-        self.position += 1
-        return value
+        return self._read_struct('<B', 'byte')
 
     def read_int(self, signed=True):
         """Reads an integer (4 bytes) value."""
         fmt = '<i' if signed else '<I'
-        value, = struct.unpack_from(fmt, self.stream, self.position)
-        self.position += 4
-        return value
+        return self._read_struct(fmt, 'int')
 
     def read_long(self, signed=True):
         """Reads a long integer (8 bytes) value."""
         fmt = '<q' if signed else '<Q'
-        value, = struct.unpack_from(fmt, self.stream, self.position)
-        self.position += 8
-        return value
+        return self._read_struct(fmt, 'long')
 
     def read_float(self):
         """Reads a real floating point (4 bytes) value."""
-        value, = struct.unpack_from("<f", self.stream, self.position)
-        self.position += 4
-        return value
+        return self._read_struct('<f', 'float')
 
     def read_double(self):
         """Reads a real floating point (8 bytes) value."""
-        value, = struct.unpack_from("<d", self.stream, self.position)
-        self.position += 8
-        return value
+        return self._read_struct('<d', 'double')
 
     def read_large_int(self, bits, signed=True):
         """Reads a n-bits long integer value."""
         return int.from_bytes(
-            self.read(bits // 8), byteorder='little', signed=signed)
+            self.read(bits // 8, _value_type='large int'),
+            byteorder='little', signed=signed)
 
-    def read(self, length=-1):
+    def _read_struct(self, fmt, value_type):
+        length = struct.calcsize(fmt)
+        value, = struct.unpack(fmt, self.read(length, _value_type=value_type))
+        return value
+
+    def read(self, length=-1, _value_type='bytes'):
         """Read the given amount of bytes, or -1 to read all remaining."""
         if length >= 0:
             result = self.stream[self.position:self.position + length]
@@ -73,12 +90,13 @@ class BinaryReader:
             result = self.stream[self.position:]
             self.position += len(result)
         if (length >= 0) and (len(result) != length):
-            raise BufferError(
-                'No more data left to read (need {}, got {}: {}); last read {}'
-                .format(length, len(result), repr(result), repr(self._last))
-            )
+            raise BinaryReaderBufferError(
+                _value_type,
+                length,
+                len(result),
+                self._constructor_ids[-1] if self._constructor_ids else None)
 
-        self._last = result
+        self._last = len(result)
         return result
 
     def get_bytes(self):
@@ -144,7 +162,7 @@ class BinaryReader:
             elif value == 0xbc799737:  # boolFalse
                 return False
             elif value == 0x1cb5c415:  # Vector
-                return [self.tgread_object() for _ in range(self.read_int())]
+                return self._tgread_vector_body(constructor_id)
 
             clazz = core_objects.get(constructor_id, None)
             if clazz is None:
@@ -154,15 +172,27 @@ class BinaryReader:
                 raise TypeNotFoundError(
                     constructor_id, len(self.stream) - pos)
 
-        return clazz.from_reader(self)
+        self._constructor_ids.append(constructor_id)
+        try:
+            return clazz.from_reader(self)
+        finally:
+            self._constructor_ids.pop()
 
     def tgread_vector(self):
         """Reads a vector (a list) of Telegram objects."""
-        if 0x1cb5c415 != self.read_int(signed=False):
+        constructor_id = self.read_int(signed=False)
+        if 0x1cb5c415 != constructor_id:
             raise RuntimeError('Invalid constructor code, vector was expected')
 
-        count = self.read_int()
-        return [self.tgread_object() for _ in range(count)]
+        return self._tgread_vector_body(constructor_id)
+
+    def _tgread_vector_body(self, constructor_id):
+        self._constructor_ids.append(constructor_id)
+        try:
+            count = self.read_int()
+            return [self.tgread_object() for _ in range(count)]
+        finally:
+            self._constructor_ids.pop()
 
     # endregion
 

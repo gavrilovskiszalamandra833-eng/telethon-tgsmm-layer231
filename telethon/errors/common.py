@@ -51,15 +51,22 @@ class InvalidBufferError(BufferError):
     For instance, 404 means "forgotten/broken authorization key", while
     """
     def __init__(self, payload):
-        self.payload = payload
-        if len(payload) == 4:
+        self.value_type = 'response buffer'
+        self.expected_length = 8
+        self.available_length = len(payload)
+        self.constructor_id = None
+        # Preserve the public attribute without retaining decrypted wire data.
+        self.payload = self.available_length
+        if self.available_length == 4:
             self.code = -struct.unpack('<i', payload)[0]
             super().__init__(
                 'Invalid response buffer (HTTP code {})'.format(self.code))
         else:
             self.code = None
             super().__init__(
-                'Invalid response buffer (too short {})'.format(self.payload))
+                'Invalid response buffer (expected at least {} bytes, '
+                'available {} bytes)'.format(
+                    self.expected_length, self.available_length))
 
 
 class AuthKeyNotFound(Exception):

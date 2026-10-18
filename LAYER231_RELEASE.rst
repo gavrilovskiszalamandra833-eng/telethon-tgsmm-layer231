@@ -58,9 +58,14 @@ fixtures and the complete upstream suite with::
 
     python3 -m pytest -q tests/telethon/test_layer231_release.py
     python3 -m pytest -q
+    uv build
 
 The release fixtures cover the patched ``MessageService`` class carrying
 ``MessageActionGramTransfer``, ``UpdateWalletState``, ``UserFull.gram_address``,
-and ``BotVerification.description`` as ``TextWithEntities``. Security tests
-also require unknown-constructor and orphan-response logs to contain only a
-constructor ID and payload length, never raw payload bytes or their repr.
+and ``BotVerification.description`` as ``TextWithEntities``. A release wheel
+must contain the complete ``telethon`` import package, including the generated
+layer 231 files. Security tests also require unknown-constructor,
+truncated-reader, invalid-buffer, sender-exception, and orphan-response
+diagnostics to contain only safe metadata (value type, expected/available
+lengths, and constructor ID where available), never raw payload bytes or their
+repr.
