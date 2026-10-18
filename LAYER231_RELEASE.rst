@@ -6,7 +6,7 @@ Identity
 
 This repository is an audited Git-dependency fork of Telethon. It installs as
 the canonical ``Telethon`` distribution and retains the ``telethon`` import
-package. Its unique PEP 440 version is ``1.45.0+tgsmm.layer231.3``. Using the
+package. Its unique PEP 440 version is ``1.45.0+tgsmm.layer231.4``. Using the
 canonical distribution name lets requirements such as
 ``opentele-ng``'s ``telethon>=1.36,<2`` resolve to this fork without installing
 a second distribution that also owns the ``telethon`` namespace. Consumers
@@ -19,7 +19,7 @@ Provenance
   (upstream Telethon ``v1.45.0``).
 * Layer: ``231``.
 * ``telethon_generator/data/api.tl`` SHA-256:
-  ``3631e910da8b2f902b29247f29fd1233d217075222a7d448bb28ef726c508576``.
+  ``aead25f949eabb33a059711fadde292a2c294e83b937788f590e9cd33c95ac1c``.
 * The layer 231 schema changes are client-derived and unofficial. They are not
   represented as an upstream Telegram-published schema and must not be
   described as upstream-authored or upstream-supported.
@@ -33,9 +33,9 @@ Run the canonical generator from the repository root::
 
 The checked-in result is expected to contain:
 
-* 1,725 constructors;
+* 1,726 constructors;
 * 841 functions;
-* 2,566 total TL objects;
+* 2,567 total TL objects;
 * 533 generated RPC error definitions; and
 * 57 generated Python files: ``telethon/tl/alltlobjects.py``,
   ``telethon/errors/rpcerrorlist.py``, and every ``*.py`` file under
@@ -65,13 +65,17 @@ fixtures and the complete upstream suite with::
 In a clean environment, install ``opentele-ng`` and the fork wheel, then run
 ``python -m pip check``. ``importlib.metadata`` must report exactly one
 distribution providing the ``telethon`` package, named ``Telethon`` at version
-``1.45.0+tgsmm.layer231.3``.
+``1.45.0+tgsmm.layer231.4``.
 
 Exported senders clone the complete client ``InitConnection`` template before
 installing their ``auth.importAuthorization`` query. Borrowing one or several
 data-center senders therefore cannot replace the shared template query or lose
 its proxy, device, application, system, language, or client-parameter metadata,
 including when an import fails or is cancelled.
+
+Build 4 adds the live-proven ``messageEntityTonAddress#fdabbfcd`` declaration
+to the canonical schema and verifies its registry entry, binary round trip,
+and decoding when nested in a ``Message.entities`` vector.
 
 The release fixtures cover the patched ``MessageService`` class carrying
 ``MessageActionGramTransfer``, ``UpdateWalletState``, ``UserFull.gram_address``,

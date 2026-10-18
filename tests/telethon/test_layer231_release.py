@@ -15,7 +15,7 @@ from telethon.extensions.binaryreader import BinaryReaderBufferError
 from telethon.network.mtprotosender import MTProtoSender, _log_type_not_found
 from telethon.client import telegrambaseclient
 from telethon.client.telegrambaseclient import TelegramBaseClient
-from telethon.tl import TLObject, functions, types
+from telethon.tl import TLObject, alltlobjects, functions, types
 from telethon.tl.core import GzipPacked, RpcResult
 from telethon.tl.core.gzippacked import GzipPackedError
 from telethon.version import __version__
@@ -34,7 +34,7 @@ def test_release_uses_canonical_distribution_identity():
     assert "name='Telethon'" in setup_py
     assert 'Telethon-TGSMM-Layer231' not in pyproject
     assert 'Telethon-TGSMM-Layer231' not in setup_py
-    assert __version__ == '1.45.0+tgsmm.layer231.3'
+    assert __version__ == '1.45.0+tgsmm.layer231.4'
     assert manifest['release'] == {
         'distribution': 'Telethon',
         'version': __version__,
@@ -210,6 +210,33 @@ def test_layer231_constructor_fixtures_roundtrip():
     ))
     assert isinstance(verification.description, types.TextWithEntities)
     assert verification.description.text == 'verified'
+
+
+def test_message_entity_ton_address_registry_and_roundtrip():
+    constructor_id = 0xFDABBFCD
+    assert types.MessageEntityTonAddress.CONSTRUCTOR_ID == constructor_id
+    assert alltlobjects.tlobjects[constructor_id] is types.MessageEntityTonAddress
+
+    entity = types.MessageEntityTonAddress(offset=4, length=48)
+    assert bytes(entity) == struct.pack('<Iii', constructor_id, 4, 48)
+    decoded_entity = _roundtrip(entity)
+    assert isinstance(decoded_entity, types.MessageEntityTonAddress)
+    assert decoded_entity.offset == 4
+    assert decoded_entity.length == 48
+
+    message = types.Message(
+        id=231,
+        peer_id=types.PeerUser(1001),
+        date=datetime(2026, 10, 18, tzinfo=timezone.utc),
+        message='TON UQ-address',
+        entities=[entity],
+    )
+    decoded_message = _roundtrip(message)
+    assert isinstance(decoded_message, types.Message)
+    assert len(decoded_message.entities) == 1
+    assert isinstance(decoded_message.entities[0], types.MessageEntityTonAddress)
+    assert decoded_message.entities[0].offset == 4
+    assert decoded_message.entities[0].length == 48
 
 
 @pytest.mark.parametrize(('name', 'constructor_id'), [

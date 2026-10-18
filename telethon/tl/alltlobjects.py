@@ -1408,6 +1408,7 @@ tlobjects = {
     0x32ca960f: types.MessageEntitySpoiler,
     0xbf0693d4: types.MessageEntityStrike,
     0x76a6d327: types.MessageEntityTextUrl,
+    0xfdabbfcd: types.MessageEntityTonAddress,
     0x9c4e7e8b: types.MessageEntityUnderline,
     0xbb92ba95: types.MessageEntityUnknown,
     0x6ed02538: types.MessageEntityUrl,

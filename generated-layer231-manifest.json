@@ -2,7 +2,7 @@
   "format": 2,
   "generated": {
     "telethon/errors/rpcerrorlist.py": "613da4a71a4b3c53e3ee081437b3f1df2a8209909f98bb4e77a3da8d01b5c1c6",
-    "telethon/tl/alltlobjects.py": "1678f493905b86ffdb85937c816bd64c9ff489d8b91cf532aef769acf49bc3a5",
+    "telethon/tl/alltlobjects.py": "1313b3ee0e0334f37ae616d13ddfb7483e22e2793301eace775ad9f5df16941d",
     "telethon/tl/functions/__init__.py": "c842f8a144a356a9924357c15f44fb082247741669cdd809636fda1f540dc623",
     "telethon/tl/functions/account.py": "146cfda70538e8a59545f08cc85cd57e5c63ca1f35b0e8a8c31a8c99e3c94cdf",
     "telethon/tl/functions/aicompose.py": "d0c79d765b4d35c939852a8b0c8016438b2284f91d1b20ffb1f5491f4175c961",
@@ -31,7 +31,7 @@
     "telethon/tl/functions/upload.py": "b3311d1c1bf7cb0b2026a152004fff73df3d5ff028ce5d4630424446b5eb6163",
     "telethon/tl/functions/users.py": "9b9087c40b556053c2778cff50e9b09621180248d9da8c8de18bf0c260c68960",
     "telethon/tl/functions/wallet.py": "0e144a6c0139659ac9172bba77b2584d1405ae9c850ebe06a26f252f3da08e23",
-    "telethon/tl/types/__init__.py": "fa4279d2500adb7507559887153fceecce9f1341f1935651c466f89753a9e6cc",
+    "telethon/tl/types/__init__.py": "0ce4b7852d3d18e5d064b6195ca512c28b0671d0d1e80abb1c202e4036feb764",
     "telethon/tl/types/account.py": "c526df330777178498f5e4a0a0a688762723f27360f1fe9256250bda2d73650c",
     "telethon/tl/types/aicompose.py": "24bf4a44b2ccd1ded67ebd414f8f7868a41034e902ad9a44a0aaf5b4094ddda6",
     "telethon/tl/types/auth.py": "39775deea0cb86e99978390af46a962cf532deb6f1660091bec67b8549222765",
@@ -62,17 +62,17 @@
   "generator_command": "python3 setup.py gen tl errors",
   "release": {
     "distribution": "Telethon",
-    "version": "1.45.0+tgsmm.layer231.3"
+    "version": "1.45.0+tgsmm.layer231.4"
   },
   "schema": {
-    "constructors": 1725,
+    "constructors": 1726,
     "functions": 841,
     "layer": 231,
     "rpc_errors": 533,
-    "tlobjects": 2566
+    "tlobjects": 2567
   },
   "sources": {
-    "telethon_generator/data/api.tl": "3631e910da8b2f902b29247f29fd1233d217075222a7d448bb28ef726c508576",
+    "telethon_generator/data/api.tl": "aead25f949eabb33a059711fadde292a2c294e83b937788f590e9cd33c95ac1c",
     "telethon_generator/data/errors.csv": "e4213e502087687fe7c34180466364c1af0026caee45438c4bb5266da809215a",
     "telethon_generator/data/friendly.csv": "b7af52102e5ad4638a50dbc684210e96e11807751d05e43d239b2fcd24f1d994",
     "telethon_generator/data/methods.csv": "1174f47ccf5f6f0a54e9f9b8d8a6a2964c2d4879cd9fa44e7af37cb3a1633663",

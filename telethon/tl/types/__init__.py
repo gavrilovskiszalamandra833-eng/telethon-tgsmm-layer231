@@ -17335,7 +17335,7 @@ class InputMessageEntityMentionName(TLObject):
 
     def __init__(self, offset: int, length: int, user_id: 'TypeInputUser'):
         """
-        Constructor for MessageEntity: Instance of either MessageEntityUnknown, MessageEntityMention, MessageEntityHashtag, MessageEntityBotCommand, MessageEntityUrl, MessageEntityEmail, MessageEntityBold, MessageEntityItalic, MessageEntityCode, MessageEntityPre, MessageEntityTextUrl, MessageEntityMentionName, InputMessageEntityMentionName, MessageEntityPhone, MessageEntityCashtag, MessageEntityUnderline, MessageEntityStrike, MessageEntityBankCard, MessageEntitySpoiler, MessageEntityCustomEmoji, MessageEntityBlockquote, MessageEntityFormattedDate, MessageEntityDiffInsert, MessageEntityDiffReplace, MessageEntityDiffDelete.
+        Constructor for MessageEntity: Instance of either MessageEntityUnknown, MessageEntityMention, MessageEntityHashtag, MessageEntityBotCommand, MessageEntityUrl, MessageEntityEmail, MessageEntityTonAddress, MessageEntityBold, MessageEntityItalic, MessageEntityCode, MessageEntityPre, MessageEntityTextUrl, MessageEntityMentionName, InputMessageEntityMentionName, MessageEntityPhone, MessageEntityCashtag, MessageEntityUnderline, MessageEntityStrike, MessageEntityBankCard, MessageEntitySpoiler, MessageEntityCustomEmoji, MessageEntityBlockquote, MessageEntityFormattedDate, MessageEntityDiffInsert, MessageEntityDiffReplace, MessageEntityDiffDelete.
         """
         self.offset = offset
         self.length = length
@@ -26363,7 +26363,7 @@ class MessageEntityBankCard(TLObject):
 
     def __init__(self, offset: int, length: int):
         """
-        Constructor for MessageEntity: Instance of either MessageEntityUnknown, MessageEntityMention, MessageEntityHashtag, MessageEntityBotCommand, MessageEntityUrl, MessageEntityEmail, MessageEntityBold, MessageEntityItalic, MessageEntityCode, MessageEntityPre, MessageEntityTextUrl, MessageEntityMentionName, InputMessageEntityMentionName, MessageEntityPhone, MessageEntityCashtag, MessageEntityUnderline, MessageEntityStrike, MessageEntityBankCard, MessageEntitySpoiler, MessageEntityCustomEmoji, MessageEntityBlockquote, MessageEntityFormattedDate, MessageEntityDiffInsert, MessageEntityDiffReplace, MessageEntityDiffDelete.
+        Constructor for MessageEntity: Instance of either MessageEntityUnknown, MessageEntityMention, MessageEntityHashtag, MessageEntityBotCommand, MessageEntityUrl, MessageEntityEmail, MessageEntityTonAddress, MessageEntityBold, MessageEntityItalic, MessageEntityCode, MessageEntityPre, MessageEntityTextUrl, MessageEntityMentionName, InputMessageEntityMentionName, MessageEntityPhone, MessageEntityCashtag, MessageEntityUnderline, MessageEntityStrike, MessageEntityBankCard, MessageEntitySpoiler, MessageEntityCustomEmoji, MessageEntityBlockquote, MessageEntityFormattedDate, MessageEntityDiffInsert, MessageEntityDiffReplace, MessageEntityDiffDelete.
         """
         self.offset = offset
         self.length = length
@@ -26395,7 +26395,7 @@ class MessageEntityBlockquote(TLObject):
 
     def __init__(self, offset: int, length: int, collapsed: Optional[bool]=None):
         """
-        Constructor for MessageEntity: Instance of either MessageEntityUnknown, MessageEntityMention, MessageEntityHashtag, MessageEntityBotCommand, MessageEntityUrl, MessageEntityEmail, MessageEntityBold, MessageEntityItalic, MessageEntityCode, MessageEntityPre, MessageEntityTextUrl, MessageEntityMentionName, InputMessageEntityMentionName, MessageEntityPhone, MessageEntityCashtag, MessageEntityUnderline, MessageEntityStrike, MessageEntityBankCard, MessageEntitySpoiler, MessageEntityCustomEmoji, MessageEntityBlockquote, MessageEntityFormattedDate, MessageEntityDiffInsert, MessageEntityDiffReplace, MessageEntityDiffDelete.
+        Constructor for MessageEntity: Instance of either MessageEntityUnknown, MessageEntityMention, MessageEntityHashtag, MessageEntityBotCommand, MessageEntityUrl, MessageEntityEmail, MessageEntityTonAddress, MessageEntityBold, MessageEntityItalic, MessageEntityCode, MessageEntityPre, MessageEntityTextUrl, MessageEntityMentionName, InputMessageEntityMentionName, MessageEntityPhone, MessageEntityCashtag, MessageEntityUnderline, MessageEntityStrike, MessageEntityBankCard, MessageEntitySpoiler, MessageEntityCustomEmoji, MessageEntityBlockquote, MessageEntityFormattedDate, MessageEntityDiffInsert, MessageEntityDiffReplace, MessageEntityDiffDelete.
         """
         self.offset = offset
         self.length = length
@@ -26433,7 +26433,7 @@ class MessageEntityBold(TLObject):
 
     def __init__(self, offset: int, length: int):
         """
-        Constructor for MessageEntity: Instance of either MessageEntityUnknown, MessageEntityMention, MessageEntityHashtag, MessageEntityBotCommand, MessageEntityUrl, MessageEntityEmail, MessageEntityBold, MessageEntityItalic, MessageEntityCode, MessageEntityPre, MessageEntityTextUrl, MessageEntityMentionName, InputMessageEntityMentionName, MessageEntityPhone, MessageEntityCashtag, MessageEntityUnderline, MessageEntityStrike, MessageEntityBankCard, MessageEntitySpoiler, MessageEntityCustomEmoji, MessageEntityBlockquote, MessageEntityFormattedDate, MessageEntityDiffInsert, MessageEntityDiffReplace, MessageEntityDiffDelete.
+        Constructor for MessageEntity: Instance of either MessageEntityUnknown, MessageEntityMention, MessageEntityHashtag, MessageEntityBotCommand, MessageEntityUrl, MessageEntityEmail, MessageEntityTonAddress, MessageEntityBold, MessageEntityItalic, MessageEntityCode, MessageEntityPre, MessageEntityTextUrl, MessageEntityMentionName, InputMessageEntityMentionName, MessageEntityPhone, MessageEntityCashtag, MessageEntityUnderline, MessageEntityStrike, MessageEntityBankCard, MessageEntitySpoiler, MessageEntityCustomEmoji, MessageEntityBlockquote, MessageEntityFormattedDate, MessageEntityDiffInsert, MessageEntityDiffReplace, MessageEntityDiffDelete.
         """
         self.offset = offset
         self.length = length
@@ -26465,7 +26465,7 @@ class MessageEntityBotCommand(TLObject):
 
     def __init__(self, offset: int, length: int):
         """
-        Constructor for MessageEntity: Instance of either MessageEntityUnknown, MessageEntityMention, MessageEntityHashtag, MessageEntityBotCommand, MessageEntityUrl, MessageEntityEmail, MessageEntityBold, MessageEntityItalic, MessageEntityCode, MessageEntityPre, MessageEntityTextUrl, MessageEntityMentionName, InputMessageEntityMentionName, MessageEntityPhone, MessageEntityCashtag, MessageEntityUnderline, MessageEntityStrike, MessageEntityBankCard, MessageEntitySpoiler, MessageEntityCustomEmoji, MessageEntityBlockquote, MessageEntityFormattedDate, MessageEntityDiffInsert, MessageEntityDiffReplace, MessageEntityDiffDelete.
+        Constructor for MessageEntity: Instance of either MessageEntityUnknown, MessageEntityMention, MessageEntityHashtag, MessageEntityBotCommand, MessageEntityUrl, MessageEntityEmail, MessageEntityTonAddress, MessageEntityBold, MessageEntityItalic, MessageEntityCode, MessageEntityPre, MessageEntityTextUrl, MessageEntityMentionName, InputMessageEntityMentionName, MessageEntityPhone, MessageEntityCashtag, MessageEntityUnderline, MessageEntityStrike, MessageEntityBankCard, MessageEntitySpoiler, MessageEntityCustomEmoji, MessageEntityBlockquote, MessageEntityFormattedDate, MessageEntityDiffInsert, MessageEntityDiffReplace, MessageEntityDiffDelete.
         """
         self.offset = offset
         self.length = length
@@ -26497,7 +26497,7 @@ class MessageEntityCashtag(TLObject):
 
     def __init__(self, offset: int, length: int):
         """
-        Constructor for MessageEntity: Instance of either MessageEntityUnknown, MessageEntityMention, MessageEntityHashtag, MessageEntityBotCommand, MessageEntityUrl, MessageEntityEmail, MessageEntityBold, MessageEntityItalic, MessageEntityCode, MessageEntityPre, MessageEntityTextUrl, MessageEntityMentionName, InputMessageEntityMentionName, MessageEntityPhone, MessageEntityCashtag, MessageEntityUnderline, MessageEntityStrike, MessageEntityBankCard, MessageEntitySpoiler, MessageEntityCustomEmoji, MessageEntityBlockquote, MessageEntityFormattedDate, MessageEntityDiffInsert, MessageEntityDiffReplace, MessageEntityDiffDelete.
+        Constructor for MessageEntity: Instance of either MessageEntityUnknown, MessageEntityMention, MessageEntityHashtag, MessageEntityBotCommand, MessageEntityUrl, MessageEntityEmail, MessageEntityTonAddress, MessageEntityBold, MessageEntityItalic, MessageEntityCode, MessageEntityPre, MessageEntityTextUrl, MessageEntityMentionName, InputMessageEntityMentionName, MessageEntityPhone, MessageEntityCashtag, MessageEntityUnderline, MessageEntityStrike, MessageEntityBankCard, MessageEntitySpoiler, MessageEntityCustomEmoji, MessageEntityBlockquote, MessageEntityFormattedDate, MessageEntityDiffInsert, MessageEntityDiffReplace, MessageEntityDiffDelete.
         """
         self.offset = offset
         self.length = length
@@ -26529,7 +26529,7 @@ class MessageEntityCode(TLObject):
 
     def __init__(self, offset: int, length: int):
         """
-        Constructor for MessageEntity: Instance of either MessageEntityUnknown, MessageEntityMention, MessageEntityHashtag, MessageEntityBotCommand, MessageEntityUrl, MessageEntityEmail, MessageEntityBold, MessageEntityItalic, MessageEntityCode, MessageEntityPre, MessageEntityTextUrl, MessageEntityMentionName, InputMessageEntityMentionName, MessageEntityPhone, MessageEntityCashtag, MessageEntityUnderline, MessageEntityStrike, MessageEntityBankCard, MessageEntitySpoiler, MessageEntityCustomEmoji, MessageEntityBlockquote, MessageEntityFormattedDate, MessageEntityDiffInsert, MessageEntityDiffReplace, MessageEntityDiffDelete.
+        Constructor for MessageEntity: Instance of either MessageEntityUnknown, MessageEntityMention, MessageEntityHashtag, MessageEntityBotCommand, MessageEntityUrl, MessageEntityEmail, MessageEntityTonAddress, MessageEntityBold, MessageEntityItalic, MessageEntityCode, MessageEntityPre, MessageEntityTextUrl, MessageEntityMentionName, InputMessageEntityMentionName, MessageEntityPhone, MessageEntityCashtag, MessageEntityUnderline, MessageEntityStrike, MessageEntityBankCard, MessageEntitySpoiler, MessageEntityCustomEmoji, MessageEntityBlockquote, MessageEntityFormattedDate, MessageEntityDiffInsert, MessageEntityDiffReplace, MessageEntityDiffDelete.
         """
         self.offset = offset
         self.length = length
@@ -26561,7 +26561,7 @@ class MessageEntityCustomEmoji(TLObject):
 
     def __init__(self, offset: int, length: int, document_id: int):
         """
-        Constructor for MessageEntity: Instance of either MessageEntityUnknown, MessageEntityMention, MessageEntityHashtag, MessageEntityBotCommand, MessageEntityUrl, MessageEntityEmail, MessageEntityBold, MessageEntityItalic, MessageEntityCode, MessageEntityPre, MessageEntityTextUrl, MessageEntityMentionName, InputMessageEntityMentionName, MessageEntityPhone, MessageEntityCashtag, MessageEntityUnderline, MessageEntityStrike, MessageEntityBankCard, MessageEntitySpoiler, MessageEntityCustomEmoji, MessageEntityBlockquote, MessageEntityFormattedDate, MessageEntityDiffInsert, MessageEntityDiffReplace, MessageEntityDiffDelete.
+        Constructor for MessageEntity: Instance of either MessageEntityUnknown, MessageEntityMention, MessageEntityHashtag, MessageEntityBotCommand, MessageEntityUrl, MessageEntityEmail, MessageEntityTonAddress, MessageEntityBold, MessageEntityItalic, MessageEntityCode, MessageEntityPre, MessageEntityTextUrl, MessageEntityMentionName, InputMessageEntityMentionName, MessageEntityPhone, MessageEntityCashtag, MessageEntityUnderline, MessageEntityStrike, MessageEntityBankCard, MessageEntitySpoiler, MessageEntityCustomEmoji, MessageEntityBlockquote, MessageEntityFormattedDate, MessageEntityDiffInsert, MessageEntityDiffReplace, MessageEntityDiffDelete.
         """
         self.offset = offset
         self.length = length
@@ -26597,7 +26597,7 @@ class MessageEntityDiffDelete(TLObject):
 
     def __init__(self, offset: int, length: int):
         """
-        Constructor for MessageEntity: Instance of either MessageEntityUnknown, MessageEntityMention, MessageEntityHashtag, MessageEntityBotCommand, MessageEntityUrl, MessageEntityEmail, MessageEntityBold, MessageEntityItalic, MessageEntityCode, MessageEntityPre, MessageEntityTextUrl, MessageEntityMentionName, InputMessageEntityMentionName, MessageEntityPhone, MessageEntityCashtag, MessageEntityUnderline, MessageEntityStrike, MessageEntityBankCard, MessageEntitySpoiler, MessageEntityCustomEmoji, MessageEntityBlockquote, MessageEntityFormattedDate, MessageEntityDiffInsert, MessageEntityDiffReplace, MessageEntityDiffDelete.
+        Constructor for MessageEntity: Instance of either MessageEntityUnknown, MessageEntityMention, MessageEntityHashtag, MessageEntityBotCommand, MessageEntityUrl, MessageEntityEmail, MessageEntityTonAddress, MessageEntityBold, MessageEntityItalic, MessageEntityCode, MessageEntityPre, MessageEntityTextUrl, MessageEntityMentionName, InputMessageEntityMentionName, MessageEntityPhone, MessageEntityCashtag, MessageEntityUnderline, MessageEntityStrike, MessageEntityBankCard, MessageEntitySpoiler, MessageEntityCustomEmoji, MessageEntityBlockquote, MessageEntityFormattedDate, MessageEntityDiffInsert, MessageEntityDiffReplace, MessageEntityDiffDelete.
         """
         self.offset = offset
         self.length = length
@@ -26629,7 +26629,7 @@ class MessageEntityDiffInsert(TLObject):
 
     def __init__(self, offset: int, length: int):
         """
-        Constructor for MessageEntity: Instance of either MessageEntityUnknown, MessageEntityMention, MessageEntityHashtag, MessageEntityBotCommand, MessageEntityUrl, MessageEntityEmail, MessageEntityBold, MessageEntityItalic, MessageEntityCode, MessageEntityPre, MessageEntityTextUrl, MessageEntityMentionName, InputMessageEntityMentionName, MessageEntityPhone, MessageEntityCashtag, MessageEntityUnderline, MessageEntityStrike, MessageEntityBankCard, MessageEntitySpoiler, MessageEntityCustomEmoji, MessageEntityBlockquote, MessageEntityFormattedDate, MessageEntityDiffInsert, MessageEntityDiffReplace, MessageEntityDiffDelete.
+        Constructor for MessageEntity: Instance of either MessageEntityUnknown, MessageEntityMention, MessageEntityHashtag, MessageEntityBotCommand, MessageEntityUrl, MessageEntityEmail, MessageEntityTonAddress, MessageEntityBold, MessageEntityItalic, MessageEntityCode, MessageEntityPre, MessageEntityTextUrl, MessageEntityMentionName, InputMessageEntityMentionName, MessageEntityPhone, MessageEntityCashtag, MessageEntityUnderline, MessageEntityStrike, MessageEntityBankCard, MessageEntitySpoiler, MessageEntityCustomEmoji, MessageEntityBlockquote, MessageEntityFormattedDate, MessageEntityDiffInsert, MessageEntityDiffReplace, MessageEntityDiffDelete.
         """
         self.offset = offset
         self.length = length
@@ -26661,7 +26661,7 @@ class MessageEntityDiffReplace(TLObject):
 
     def __init__(self, offset: int, length: int, old_text: str):
         """
-        Constructor for MessageEntity: Instance of either MessageEntityUnknown, MessageEntityMention, MessageEntityHashtag, MessageEntityBotCommand, MessageEntityUrl, MessageEntityEmail, MessageEntityBold, MessageEntityItalic, MessageEntityCode, MessageEntityPre, MessageEntityTextUrl, MessageEntityMentionName, InputMessageEntityMentionName, MessageEntityPhone, MessageEntityCashtag, MessageEntityUnderline, MessageEntityStrike, MessageEntityBankCard, MessageEntitySpoiler, MessageEntityCustomEmoji, MessageEntityBlockquote, MessageEntityFormattedDate, MessageEntityDiffInsert, MessageEntityDiffReplace, MessageEntityDiffDelete.
+        Constructor for MessageEntity: Instance of either MessageEntityUnknown, MessageEntityMention, MessageEntityHashtag, MessageEntityBotCommand, MessageEntityUrl, MessageEntityEmail, MessageEntityTonAddress, MessageEntityBold, MessageEntityItalic, MessageEntityCode, MessageEntityPre, MessageEntityTextUrl, MessageEntityMentionName, InputMessageEntityMentionName, MessageEntityPhone, MessageEntityCashtag, MessageEntityUnderline, MessageEntityStrike, MessageEntityBankCard, MessageEntitySpoiler, MessageEntityCustomEmoji, MessageEntityBlockquote, MessageEntityFormattedDate, MessageEntityDiffInsert, MessageEntityDiffReplace, MessageEntityDiffDelete.
         """
         self.offset = offset
         self.length = length
@@ -26697,7 +26697,7 @@ class MessageEntityEmail(TLObject):
 
     def __init__(self, offset: int, length: int):
         """
-        Constructor for MessageEntity: Instance of either MessageEntityUnknown, MessageEntityMention, MessageEntityHashtag, MessageEntityBotCommand, MessageEntityUrl, MessageEntityEmail, MessageEntityBold, MessageEntityItalic, MessageEntityCode, MessageEntityPre, MessageEntityTextUrl, MessageEntityMentionName, InputMessageEntityMentionName, MessageEntityPhone, MessageEntityCashtag, MessageEntityUnderline, MessageEntityStrike, MessageEntityBankCard, MessageEntitySpoiler, MessageEntityCustomEmoji, MessageEntityBlockquote, MessageEntityFormattedDate, MessageEntityDiffInsert, MessageEntityDiffReplace, MessageEntityDiffDelete.
+        Constructor for MessageEntity: Instance of either MessageEntityUnknown, MessageEntityMention, MessageEntityHashtag, MessageEntityBotCommand, MessageEntityUrl, MessageEntityEmail, MessageEntityTonAddress, MessageEntityBold, MessageEntityItalic, MessageEntityCode, MessageEntityPre, MessageEntityTextUrl, MessageEntityMentionName, InputMessageEntityMentionName, MessageEntityPhone, MessageEntityCashtag, MessageEntityUnderline, MessageEntityStrike, MessageEntityBankCard, MessageEntitySpoiler, MessageEntityCustomEmoji, MessageEntityBlockquote, MessageEntityFormattedDate, MessageEntityDiffInsert, MessageEntityDiffReplace, MessageEntityDiffDelete.
         """
         self.offset = offset
         self.length = length
@@ -26729,7 +26729,7 @@ class MessageEntityFormattedDate(TLObject):
 
     def __init__(self, offset: int, length: int, date: Optional[datetime], relative: Optional[bool]=None, short_time: Optional[bool]=None, long_time: Optional[bool]=None, short_date: Optional[bool]=None, long_date: Optional[bool]=None, day_of_week: Optional[bool]=None):
         """
-        Constructor for MessageEntity: Instance of either MessageEntityUnknown, MessageEntityMention, MessageEntityHashtag, MessageEntityBotCommand, MessageEntityUrl, MessageEntityEmail, MessageEntityBold, MessageEntityItalic, MessageEntityCode, MessageEntityPre, MessageEntityTextUrl, MessageEntityMentionName, InputMessageEntityMentionName, MessageEntityPhone, MessageEntityCashtag, MessageEntityUnderline, MessageEntityStrike, MessageEntityBankCard, MessageEntitySpoiler, MessageEntityCustomEmoji, MessageEntityBlockquote, MessageEntityFormattedDate, MessageEntityDiffInsert, MessageEntityDiffReplace, MessageEntityDiffDelete.
+        Constructor for MessageEntity: Instance of either MessageEntityUnknown, MessageEntityMention, MessageEntityHashtag, MessageEntityBotCommand, MessageEntityUrl, MessageEntityEmail, MessageEntityTonAddress, MessageEntityBold, MessageEntityItalic, MessageEntityCode, MessageEntityPre, MessageEntityTextUrl, MessageEntityMentionName, InputMessageEntityMentionName, MessageEntityPhone, MessageEntityCashtag, MessageEntityUnderline, MessageEntityStrike, MessageEntityBankCard, MessageEntitySpoiler, MessageEntityCustomEmoji, MessageEntityBlockquote, MessageEntityFormattedDate, MessageEntityDiffInsert, MessageEntityDiffReplace, MessageEntityDiffDelete.
         """
         self.offset = offset
         self.length = length
@@ -26786,7 +26786,7 @@ class MessageEntityHashtag(TLObject):
 
     def __init__(self, offset: int, length: int):
         """
-        Constructor for MessageEntity: Instance of either MessageEntityUnknown, MessageEntityMention, MessageEntityHashtag, MessageEntityBotCommand, MessageEntityUrl, MessageEntityEmail, MessageEntityBold, MessageEntityItalic, MessageEntityCode, MessageEntityPre, MessageEntityTextUrl, MessageEntityMentionName, InputMessageEntityMentionName, MessageEntityPhone, MessageEntityCashtag, MessageEntityUnderline, MessageEntityStrike, MessageEntityBankCard, MessageEntitySpoiler, MessageEntityCustomEmoji, MessageEntityBlockquote, MessageEntityFormattedDate, MessageEntityDiffInsert, MessageEntityDiffReplace, MessageEntityDiffDelete.
+        Constructor for MessageEntity: Instance of either MessageEntityUnknown, MessageEntityMention, MessageEntityHashtag, MessageEntityBotCommand, MessageEntityUrl, MessageEntityEmail, MessageEntityTonAddress, MessageEntityBold, MessageEntityItalic, MessageEntityCode, MessageEntityPre, MessageEntityTextUrl, MessageEntityMentionName, InputMessageEntityMentionName, MessageEntityPhone, MessageEntityCashtag, MessageEntityUnderline, MessageEntityStrike, MessageEntityBankCard, MessageEntitySpoiler, MessageEntityCustomEmoji, MessageEntityBlockquote, MessageEntityFormattedDate, MessageEntityDiffInsert, MessageEntityDiffReplace, MessageEntityDiffDelete.
         """
         self.offset = offset
         self.length = length
@@ -26818,7 +26818,7 @@ class MessageEntityItalic(TLObject):
 
     def __init__(self, offset: int, length: int):
         """
-        Constructor for MessageEntity: Instance of either MessageEntityUnknown, MessageEntityMention, MessageEntityHashtag, MessageEntityBotCommand, MessageEntityUrl, MessageEntityEmail, MessageEntityBold, MessageEntityItalic, MessageEntityCode, MessageEntityPre, MessageEntityTextUrl, MessageEntityMentionName, InputMessageEntityMentionName, MessageEntityPhone, MessageEntityCashtag, MessageEntityUnderline, MessageEntityStrike, MessageEntityBankCard, MessageEntitySpoiler, MessageEntityCustomEmoji, MessageEntityBlockquote, MessageEntityFormattedDate, MessageEntityDiffInsert, MessageEntityDiffReplace, MessageEntityDiffDelete.
+        Constructor for MessageEntity: Instance of either MessageEntityUnknown, MessageEntityMention, MessageEntityHashtag, MessageEntityBotCommand, MessageEntityUrl, MessageEntityEmail, MessageEntityTonAddress, MessageEntityBold, MessageEntityItalic, MessageEntityCode, MessageEntityPre, MessageEntityTextUrl, MessageEntityMentionName, InputMessageEntityMentionName, MessageEntityPhone, MessageEntityCashtag, MessageEntityUnderline, MessageEntityStrike, MessageEntityBankCard, MessageEntitySpoiler, MessageEntityCustomEmoji, MessageEntityBlockquote, MessageEntityFormattedDate, MessageEntityDiffInsert, MessageEntityDiffReplace, MessageEntityDiffDelete.
         """
         self.offset = offset
         self.length = length
@@ -26850,7 +26850,7 @@ class MessageEntityMention(TLObject):
 
     def __init__(self, offset: int, length: int):
         """
-        Constructor for MessageEntity: Instance of either MessageEntityUnknown, MessageEntityMention, MessageEntityHashtag, MessageEntityBotCommand, MessageEntityUrl, MessageEntityEmail, MessageEntityBold, MessageEntityItalic, MessageEntityCode, MessageEntityPre, MessageEntityTextUrl, MessageEntityMentionName, InputMessageEntityMentionName, MessageEntityPhone, MessageEntityCashtag, MessageEntityUnderline, MessageEntityStrike, MessageEntityBankCard, MessageEntitySpoiler, MessageEntityCustomEmoji, MessageEntityBlockquote, MessageEntityFormattedDate, MessageEntityDiffInsert, MessageEntityDiffReplace, MessageEntityDiffDelete.
+        Constructor for MessageEntity: Instance of either MessageEntityUnknown, MessageEntityMention, MessageEntityHashtag, MessageEntityBotCommand, MessageEntityUrl, MessageEntityEmail, MessageEntityTonAddress, MessageEntityBold, MessageEntityItalic, MessageEntityCode, MessageEntityPre, MessageEntityTextUrl, MessageEntityMentionName, InputMessageEntityMentionName, MessageEntityPhone, MessageEntityCashtag, MessageEntityUnderline, MessageEntityStrike, MessageEntityBankCard, MessageEntitySpoiler, MessageEntityCustomEmoji, MessageEntityBlockquote, MessageEntityFormattedDate, MessageEntityDiffInsert, MessageEntityDiffReplace, MessageEntityDiffDelete.
         """
         self.offset = offset
         self.length = length
@@ -26882,7 +26882,7 @@ class MessageEntityMentionName(TLObject):
 
     def __init__(self, offset: int, length: int, user_id: int):
         """
-        Constructor for MessageEntity: Instance of either MessageEntityUnknown, MessageEntityMention, MessageEntityHashtag, MessageEntityBotCommand, MessageEntityUrl, MessageEntityEmail, MessageEntityBold, MessageEntityItalic, MessageEntityCode, MessageEntityPre, MessageEntityTextUrl, MessageEntityMentionName, InputMessageEntityMentionName, MessageEntityPhone, MessageEntityCashtag, MessageEntityUnderline, MessageEntityStrike, MessageEntityBankCard, MessageEntitySpoiler, MessageEntityCustomEmoji, MessageEntityBlockquote, MessageEntityFormattedDate, MessageEntityDiffInsert, MessageEntityDiffReplace, MessageEntityDiffDelete.
+        Constructor for MessageEntity: Instance of either MessageEntityUnknown, MessageEntityMention, MessageEntityHashtag, MessageEntityBotCommand, MessageEntityUrl, MessageEntityEmail, MessageEntityTonAddress, MessageEntityBold, MessageEntityItalic, MessageEntityCode, MessageEntityPre, MessageEntityTextUrl, MessageEntityMentionName, InputMessageEntityMentionName, MessageEntityPhone, MessageEntityCashtag, MessageEntityUnderline, MessageEntityStrike, MessageEntityBankCard, MessageEntitySpoiler, MessageEntityCustomEmoji, MessageEntityBlockquote, MessageEntityFormattedDate, MessageEntityDiffInsert, MessageEntityDiffReplace, MessageEntityDiffDelete.
         """
         self.offset = offset
         self.length = length
@@ -26918,7 +26918,7 @@ class MessageEntityPhone(TLObject):
 
     def __init__(self, offset: int, length: int):
         """
-        Constructor for MessageEntity: Instance of either MessageEntityUnknown, MessageEntityMention, MessageEntityHashtag, MessageEntityBotCommand, MessageEntityUrl, MessageEntityEmail, MessageEntityBold, MessageEntityItalic, MessageEntityCode, MessageEntityPre, MessageEntityTextUrl, MessageEntityMentionName, InputMessageEntityMentionName, MessageEntityPhone, MessageEntityCashtag, MessageEntityUnderline, MessageEntityStrike, MessageEntityBankCard, MessageEntitySpoiler, MessageEntityCustomEmoji, MessageEntityBlockquote, MessageEntityFormattedDate, MessageEntityDiffInsert, MessageEntityDiffReplace, MessageEntityDiffDelete.
+        Constructor for MessageEntity: Instance of either MessageEntityUnknown, MessageEntityMention, MessageEntityHashtag, MessageEntityBotCommand, MessageEntityUrl, MessageEntityEmail, MessageEntityTonAddress, MessageEntityBold, MessageEntityItalic, MessageEntityCode, MessageEntityPre, MessageEntityTextUrl, MessageEntityMentionName, InputMessageEntityMentionName, MessageEntityPhone, MessageEntityCashtag, MessageEntityUnderline, MessageEntityStrike, MessageEntityBankCard, MessageEntitySpoiler, MessageEntityCustomEmoji, MessageEntityBlockquote, MessageEntityFormattedDate, MessageEntityDiffInsert, MessageEntityDiffReplace, MessageEntityDiffDelete.
         """
         self.offset = offset
         self.length = length
@@ -26950,7 +26950,7 @@ class MessageEntityPre(TLObject):
 
     def __init__(self, offset: int, length: int, language: str):
         """
-        Constructor for MessageEntity: Instance of either MessageEntityUnknown, MessageEntityMention, MessageEntityHashtag, MessageEntityBotCommand, MessageEntityUrl, MessageEntityEmail, MessageEntityBold, MessageEntityItalic, MessageEntityCode, MessageEntityPre, MessageEntityTextUrl, MessageEntityMentionName, InputMessageEntityMentionName, MessageEntityPhone, MessageEntityCashtag, MessageEntityUnderline, MessageEntityStrike, MessageEntityBankCard, MessageEntitySpoiler, MessageEntityCustomEmoji, MessageEntityBlockquote, MessageEntityFormattedDate, MessageEntityDiffInsert, MessageEntityDiffReplace, MessageEntityDiffDelete.
+        Constructor for MessageEntity: Instance of either MessageEntityUnknown, MessageEntityMention, MessageEntityHashtag, MessageEntityBotCommand, MessageEntityUrl, MessageEntityEmail, MessageEntityTonAddress, MessageEntityBold, MessageEntityItalic, MessageEntityCode, MessageEntityPre, MessageEntityTextUrl, MessageEntityMentionName, InputMessageEntityMentionName, MessageEntityPhone, MessageEntityCashtag, MessageEntityUnderline, MessageEntityStrike, MessageEntityBankCard, MessageEntitySpoiler, MessageEntityCustomEmoji, MessageEntityBlockquote, MessageEntityFormattedDate, MessageEntityDiffInsert, MessageEntityDiffReplace, MessageEntityDiffDelete.
         """
         self.offset = offset
         self.length = length
@@ -26986,7 +26986,7 @@ class MessageEntitySpoiler(TLObject):
 
     def __init__(self, offset: int, length: int):
         """
-        Constructor for MessageEntity: Instance of either MessageEntityUnknown, MessageEntityMention, MessageEntityHashtag, MessageEntityBotCommand, MessageEntityUrl, MessageEntityEmail, MessageEntityBold, MessageEntityItalic, MessageEntityCode, MessageEntityPre, MessageEntityTextUrl, MessageEntityMentionName, InputMessageEntityMentionName, MessageEntityPhone, MessageEntityCashtag, MessageEntityUnderline, MessageEntityStrike, MessageEntityBankCard, MessageEntitySpoiler, MessageEntityCustomEmoji, MessageEntityBlockquote, MessageEntityFormattedDate, MessageEntityDiffInsert, MessageEntityDiffReplace, MessageEntityDiffDelete.
+        Constructor for MessageEntity: Instance of either MessageEntityUnknown, MessageEntityMention, MessageEntityHashtag, MessageEntityBotCommand, MessageEntityUrl, MessageEntityEmail, MessageEntityTonAddress, MessageEntityBold, MessageEntityItalic, MessageEntityCode, MessageEntityPre, MessageEntityTextUrl, MessageEntityMentionName, InputMessageEntityMentionName, MessageEntityPhone, MessageEntityCashtag, MessageEntityUnderline, MessageEntityStrike, MessageEntityBankCard, MessageEntitySpoiler, MessageEntityCustomEmoji, MessageEntityBlockquote, MessageEntityFormattedDate, MessageEntityDiffInsert, MessageEntityDiffReplace, MessageEntityDiffDelete.
         """
         self.offset = offset
         self.length = length
@@ -27018,7 +27018,7 @@ class MessageEntityStrike(TLObject):
 
     def __init__(self, offset: int, length: int):
         """
-        Constructor for MessageEntity: Instance of either MessageEntityUnknown, MessageEntityMention, MessageEntityHashtag, MessageEntityBotCommand, MessageEntityUrl, MessageEntityEmail, MessageEntityBold, MessageEntityItalic, MessageEntityCode, MessageEntityPre, MessageEntityTextUrl, MessageEntityMentionName, InputMessageEntityMentionName, MessageEntityPhone, MessageEntityCashtag, MessageEntityUnderline, MessageEntityStrike, MessageEntityBankCard, MessageEntitySpoiler, MessageEntityCustomEmoji, MessageEntityBlockquote, MessageEntityFormattedDate, MessageEntityDiffInsert, MessageEntityDiffReplace, MessageEntityDiffDelete.
+        Constructor for MessageEntity: Instance of either MessageEntityUnknown, MessageEntityMention, MessageEntityHashtag, MessageEntityBotCommand, MessageEntityUrl, MessageEntityEmail, MessageEntityTonAddress, MessageEntityBold, MessageEntityItalic, MessageEntityCode, MessageEntityPre, MessageEntityTextUrl, MessageEntityMentionName, InputMessageEntityMentionName, MessageEntityPhone, MessageEntityCashtag, MessageEntityUnderline, MessageEntityStrike, MessageEntityBankCard, MessageEntitySpoiler, MessageEntityCustomEmoji, MessageEntityBlockquote, MessageEntityFormattedDate, MessageEntityDiffInsert, MessageEntityDiffReplace, MessageEntityDiffDelete.
         """
         self.offset = offset
         self.length = length
@@ -27050,7 +27050,7 @@ class MessageEntityTextUrl(TLObject):
 
     def __init__(self, offset: int, length: int, url: str):
         """
-        Constructor for MessageEntity: Instance of either MessageEntityUnknown, MessageEntityMention, MessageEntityHashtag, MessageEntityBotCommand, MessageEntityUrl, MessageEntityEmail, MessageEntityBold, MessageEntityItalic, MessageEntityCode, MessageEntityPre, MessageEntityTextUrl, MessageEntityMentionName, InputMessageEntityMentionName, MessageEntityPhone, MessageEntityCashtag, MessageEntityUnderline, MessageEntityStrike, MessageEntityBankCard, MessageEntitySpoiler, MessageEntityCustomEmoji, MessageEntityBlockquote, MessageEntityFormattedDate, MessageEntityDiffInsert, MessageEntityDiffReplace, MessageEntityDiffDelete.
+        Constructor for MessageEntity: Instance of either MessageEntityUnknown, MessageEntityMention, MessageEntityHashtag, MessageEntityBotCommand, MessageEntityUrl, MessageEntityEmail, MessageEntityTonAddress, MessageEntityBold, MessageEntityItalic, MessageEntityCode, MessageEntityPre, MessageEntityTextUrl, MessageEntityMentionName, InputMessageEntityMentionName, MessageEntityPhone, MessageEntityCashtag, MessageEntityUnderline, MessageEntityStrike, MessageEntityBankCard, MessageEntitySpoiler, MessageEntityCustomEmoji, MessageEntityBlockquote, MessageEntityFormattedDate, MessageEntityDiffInsert, MessageEntityDiffReplace, MessageEntityDiffDelete.
         """
         self.offset = offset
         self.length = length
@@ -27080,13 +27080,45 @@ class MessageEntityTextUrl(TLObject):
         return cls(offset=_offset, length=_length, url=_url)
 
 
+class MessageEntityTonAddress(TLObject):
+    CONSTRUCTOR_ID = 0xfdabbfcd
+    SUBCLASS_OF_ID = 0xcf6419dc
+
+    def __init__(self, offset: int, length: int):
+        """
+        Constructor for MessageEntity: Instance of either MessageEntityUnknown, MessageEntityMention, MessageEntityHashtag, MessageEntityBotCommand, MessageEntityUrl, MessageEntityEmail, MessageEntityTonAddress, MessageEntityBold, MessageEntityItalic, MessageEntityCode, MessageEntityPre, MessageEntityTextUrl, MessageEntityMentionName, InputMessageEntityMentionName, MessageEntityPhone, MessageEntityCashtag, MessageEntityUnderline, MessageEntityStrike, MessageEntityBankCard, MessageEntitySpoiler, MessageEntityCustomEmoji, MessageEntityBlockquote, MessageEntityFormattedDate, MessageEntityDiffInsert, MessageEntityDiffReplace, MessageEntityDiffDelete.
+        """
+        self.offset = offset
+        self.length = length
+
+    def to_dict(self):
+        return {
+            '_': 'MessageEntityTonAddress',
+            'offset': self.offset,
+            'length': self.length
+        }
+
+    def _bytes(self):
+        return b''.join((
+            b'\xcd\xbf\xab\xfd',
+            struct.pack('<i', self.offset),
+            struct.pack('<i', self.length),
+        ))
+
+    @classmethod
+    def from_reader(cls, reader):
+        _offset = reader.read_int()
+        _length = reader.read_int()
+        return cls(offset=_offset, length=_length)
+
+
 class MessageEntityUnderline(TLObject):
     CONSTRUCTOR_ID = 0x9c4e7e8b
     SUBCLASS_OF_ID = 0xcf6419dc
 
     def __init__(self, offset: int, length: int):
         """
-        Constructor for MessageEntity: Instance of either MessageEntityUnknown, MessageEntityMention, MessageEntityHashtag, MessageEntityBotCommand, MessageEntityUrl, MessageEntityEmail, MessageEntityBold, MessageEntityItalic, MessageEntityCode, MessageEntityPre, MessageEntityTextUrl, MessageEntityMentionName, InputMessageEntityMentionName, MessageEntityPhone, MessageEntityCashtag, MessageEntityUnderline, MessageEntityStrike, MessageEntityBankCard, MessageEntitySpoiler, MessageEntityCustomEmoji, MessageEntityBlockquote, MessageEntityFormattedDate, MessageEntityDiffInsert, MessageEntityDiffReplace, MessageEntityDiffDelete.
+        Constructor for MessageEntity: Instance of either MessageEntityUnknown, MessageEntityMention, MessageEntityHashtag, MessageEntityBotCommand, MessageEntityUrl, MessageEntityEmail, MessageEntityTonAddress, MessageEntityBold, MessageEntityItalic, MessageEntityCode, MessageEntityPre, MessageEntityTextUrl, MessageEntityMentionName, InputMessageEntityMentionName, MessageEntityPhone, MessageEntityCashtag, MessageEntityUnderline, MessageEntityStrike, MessageEntityBankCard, MessageEntitySpoiler, MessageEntityCustomEmoji, MessageEntityBlockquote, MessageEntityFormattedDate, MessageEntityDiffInsert, MessageEntityDiffReplace, MessageEntityDiffDelete.
         """
         self.offset = offset
         self.length = length
@@ -27118,7 +27150,7 @@ class MessageEntityUnknown(TLObject):
 
     def __init__(self, offset: int, length: int):
         """
-        Constructor for MessageEntity: Instance of either MessageEntityUnknown, MessageEntityMention, MessageEntityHashtag, MessageEntityBotCommand, MessageEntityUrl, MessageEntityEmail, MessageEntityBold, MessageEntityItalic, MessageEntityCode, MessageEntityPre, MessageEntityTextUrl, MessageEntityMentionName, InputMessageEntityMentionName, MessageEntityPhone, MessageEntityCashtag, MessageEntityUnderline, MessageEntityStrike, MessageEntityBankCard, MessageEntitySpoiler, MessageEntityCustomEmoji, MessageEntityBlockquote, MessageEntityFormattedDate, MessageEntityDiffInsert, MessageEntityDiffReplace, MessageEntityDiffDelete.
+        Constructor for MessageEntity: Instance of either MessageEntityUnknown, MessageEntityMention, MessageEntityHashtag, MessageEntityBotCommand, MessageEntityUrl, MessageEntityEmail, MessageEntityTonAddress, MessageEntityBold, MessageEntityItalic, MessageEntityCode, MessageEntityPre, MessageEntityTextUrl, MessageEntityMentionName, InputMessageEntityMentionName, MessageEntityPhone, MessageEntityCashtag, MessageEntityUnderline, MessageEntityStrike, MessageEntityBankCard, MessageEntitySpoiler, MessageEntityCustomEmoji, MessageEntityBlockquote, MessageEntityFormattedDate, MessageEntityDiffInsert, MessageEntityDiffReplace, MessageEntityDiffDelete.
         """
         self.offset = offset
         self.length = length
@@ -27150,7 +27182,7 @@ class MessageEntityUrl(TLObject):
 
     def __init__(self, offset: int, length: int):
         """
-        Constructor for MessageEntity: Instance of either MessageEntityUnknown, MessageEntityMention, MessageEntityHashtag, MessageEntityBotCommand, MessageEntityUrl, MessageEntityEmail, MessageEntityBold, MessageEntityItalic, MessageEntityCode, MessageEntityPre, MessageEntityTextUrl, MessageEntityMentionName, InputMessageEntityMentionName, MessageEntityPhone, MessageEntityCashtag, MessageEntityUnderline, MessageEntityStrike, MessageEntityBankCard, MessageEntitySpoiler, MessageEntityCustomEmoji, MessageEntityBlockquote, MessageEntityFormattedDate, MessageEntityDiffInsert, MessageEntityDiffReplace, MessageEntityDiffDelete.
+        Constructor for MessageEntity: Instance of either MessageEntityUnknown, MessageEntityMention, MessageEntityHashtag, MessageEntityBotCommand, MessageEntityUrl, MessageEntityEmail, MessageEntityTonAddress, MessageEntityBold, MessageEntityItalic, MessageEntityCode, MessageEntityPre, MessageEntityTextUrl, MessageEntityMentionName, InputMessageEntityMentionName, MessageEntityPhone, MessageEntityCashtag, MessageEntityUnderline, MessageEntityStrike, MessageEntityBankCard, MessageEntitySpoiler, MessageEntityCustomEmoji, MessageEntityBlockquote, MessageEntityFormattedDate, MessageEntityDiffInsert, MessageEntityDiffReplace, MessageEntityDiffDelete.
         """
         self.offset = offset
         self.length = length
@@ -54015,7 +54047,7 @@ TypeInputInvoice = Union[InputInvoiceMessage,InputInvoiceSlug,InputInvoicePremiu
 TypeMediaArea = Union[MediaAreaVenue,InputMediaAreaVenue,MediaAreaGeoPoint,MediaAreaSuggestedReaction,MediaAreaChannelPost,InputMediaAreaChannelPost,MediaAreaUrl,MediaAreaWeather,MediaAreaStarGift]
 TypeInputMedia = Union[InputMediaEmpty,InputMediaUploadedPhoto,InputMediaPhoto,InputMediaGeoPoint,InputMediaContact,InputMediaUploadedDocument,InputMediaDocument,InputMediaVenue,InputMediaPhotoExternal,InputMediaDocumentExternal,InputMediaGame,InputMediaInvoice,InputMediaGeoLive,InputMediaPoll,InputMediaDice,InputMediaStory,InputMediaWebPage,InputMediaPaidMedia,InputMediaTodo,InputMediaStakeDice]
 TypeInputMessage = Union[InputMessageID,InputMessageReplyTo,InputMessagePinned,InputMessageCallbackQuery]
-TypeMessageEntity = Union[MessageEntityUnknown,MessageEntityMention,MessageEntityHashtag,MessageEntityBotCommand,MessageEntityUrl,MessageEntityEmail,MessageEntityBold,MessageEntityItalic,MessageEntityCode,MessageEntityPre,MessageEntityTextUrl,MessageEntityMentionName,InputMessageEntityMentionName,MessageEntityPhone,MessageEntityCashtag,MessageEntityUnderline,MessageEntityStrike,MessageEntityBankCard,MessageEntitySpoiler,MessageEntityCustomEmoji,MessageEntityBlockquote,MessageEntityFormattedDate,MessageEntityDiffInsert,MessageEntityDiffReplace,MessageEntityDiffDelete]
+TypeMessageEntity = Union[MessageEntityUnknown,MessageEntityMention,MessageEntityHashtag,MessageEntityBotCommand,MessageEntityUrl,MessageEntityEmail,MessageEntityTonAddress,MessageEntityBold,MessageEntityItalic,MessageEntityCode,MessageEntityPre,MessageEntityTextUrl,MessageEntityMentionName,InputMessageEntityMentionName,MessageEntityPhone,MessageEntityCashtag,MessageEntityUnderline,MessageEntityStrike,MessageEntityBankCard,MessageEntitySpoiler,MessageEntityCustomEmoji,MessageEntityBlockquote,MessageEntityFormattedDate,MessageEntityDiffInsert,MessageEntityDiffReplace,MessageEntityDiffDelete]
 TypeInputMessageReadMetric = InputMessageReadMetric
 TypeMessagesFilter = Union[InputMessagesFilterEmpty,InputMessagesFilterPhotos,InputMessagesFilterVideo,InputMessagesFilterPhotoVideo,InputMessagesFilterDocument,InputMessagesFilterUrl,InputMessagesFilterGif,InputMessagesFilterVoice,InputMessagesFilterMusic,InputMessagesFilterChatPhotos,InputMessagesFilterPhoneCalls,InputMessagesFilterRoundVoice,InputMessagesFilterRoundVideo,InputMessagesFilterMyMentions,InputMessagesFilterGeo,InputMessagesFilterContacts,InputMessagesFilterPinned,InputMessagesFilterPoll]
 TypeInputNotifyPeer = Union[InputNotifyPeer,InputNotifyUsers,InputNotifyChats,InputNotifyBroadcasts,InputNotifyForumTopic,InputNotifyCommunity]

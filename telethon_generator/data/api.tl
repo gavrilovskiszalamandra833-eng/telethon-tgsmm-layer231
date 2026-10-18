@@ -727,6 +727,7 @@ messageEntityHashtag#6f635b0d offset:int length:int = MessageEntity;
 messageEntityBotCommand#6cef8ac7 offset:int length:int = MessageEntity;
 messageEntityUrl#6ed02538 offset:int length:int = MessageEntity;
 messageEntityEmail#64e475c2 offset:int length:int = MessageEntity;
+messageEntityTonAddress#fdabbfcd offset:int length:int = MessageEntity;
 messageEntityBold#bd610bc9 offset:int length:int = MessageEntity;
 messageEntityItalic#826f8b60 offset:int length:int = MessageEntity;
 messageEntityCode#28a20571 offset:int length:int = MessageEntity;
